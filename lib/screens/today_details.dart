@@ -1,15 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:weather/data/weather_object.dart';
+import 'package:weather/data/weather.dart';
+import 'dart:convert';
 
 class CurrentDetails extends StatefulWidget {
-  const CurrentDetails({Key? key}) : super(key: key);
+  String message;
+
+  CurrentDetails(this.message);
 
   @override
-  _CurrentDetailsState createState() => _CurrentDetailsState();
+  _CurrentDetailsState createState() => _CurrentDetailsState(message);
 }
 
 class _CurrentDetailsState extends State<CurrentDetails> {
   Weather? weather;
+  String message;
+  var jsonWeatherMap;
+  _CurrentDetailsState(this.message) {
+    jsonWeatherMap = jsonDecode(message);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +26,7 @@ class _CurrentDetailsState extends State<CurrentDetails> {
         title: Text('Weather'),
       ),
       body: Column(
-        children: [Text('City')],
+        children: [Text(message)],
       ),
     );
   }
