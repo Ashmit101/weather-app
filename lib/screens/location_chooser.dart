@@ -21,31 +21,32 @@ class _LocationChooserState extends State<LocationChooser> {
         ElevatedButton.styleFrom(textStyle: TextStyle(fontSize: 24));
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Location'),
-      ),
-      body: Container(
-        padding: EdgeInsets.all(15.0),
-        child: Column(
-          children: [
-            Icon(
-              Icons.explore,
-              size: 50,
-            ),
-            Text("Search your location"),
-            TextField(
-              controller: locationTextController,
-            ),
-            ElevatedButton(
-              style: buttonStyle,
-              onPressed: () => printJson(context),
-              child: Text('Submit'),
-            ),
-            Text(weatherInfo),
-          ],
+        appBar: AppBar(
+          title: Text('Location'),
         ),
-      ),
-    );
+        body: SingleChildScrollView(
+          child: Container(
+            padding: EdgeInsets.all(15.0),
+            child: Column(
+              children: [
+                Icon(
+                  Icons.explore,
+                  size: 50,
+                ),
+                Text("Search your location"),
+                TextField(
+                  controller: locationTextController,
+                ),
+                ElevatedButton(
+                  style: buttonStyle,
+                  onPressed: () => printJson(context),
+                  child: Text('Submit'),
+                ),
+                Text(weatherInfo),
+              ],
+            ),
+          ),
+        ));
   }
 
   printJson(BuildContext context) async {
