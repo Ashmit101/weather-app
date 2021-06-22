@@ -32,9 +32,17 @@ class _CurrentDetailsState extends State<CurrentDetails> {
     weather = Weather.fromJsonMap(jsonWeatherMap);
 
     String name = weather.name;
-    double temperature = weather.temperature['temp'];
     String main = weather.main;
     String description = weather.description;
+    String icon = weather.icon;
+
+    //Temperature data
+    double temperature = weather.temperature['temp'];
+    double feels_like = weather.temperature['feels_like'];
+    double temp_min = weather.temperature['temp_min'];
+    double temp_max = weather.temperature['temp_max'];
+    int pressure = weather.temperature['pressure'];
+    int humidity = weather.temperature['humidity'];
 
     TextStyle textStyle = TextStyle(fontSize: 18);
     TextStyle tempStyle = TextStyle(fontSize: 30);
@@ -48,21 +56,119 @@ class _CurrentDetailsState extends State<CurrentDetails> {
           width: sizeX,
           height: sizeY,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(name, style: textStyle),
-              Text(
-                temperature.toString(),
-                style: tempStyle,
+              // Row(children: [
+              //   Image.network("http://openweathermap.org/img/wn/$icon@2x.png"),
+              //   Expanded(
+              //       child: Column(
+              //     children: [Text(main), Text(description)],
+              //   ))
+              // ]),
+
+              Card(
+                  child: ListTile(
+                      leading: Image.network(
+                          "http://openweathermap.org/img/wn/$icon@2x.png"),
+                      title: Text(main),
+                      subtitle: Text(description))),
+
+              Card(
+                child: Column(
+                  children: [
+                    Text(
+                      temperature.toString(),
+                      style: TextStyle(
+                        fontSize: 50,
+                      ),
+                    ),
+                    Table(
+                      children: [
+                        TableRow(
+                          children: [
+                            //feels like
+                            Center(
+                                child: Text(
+                              'Feels like',
+                              style: textStyle,
+                            )),
+                            //feels like value
+                            Center(
+                                child: Text(
+                              feels_like.toString(),
+                              style: textStyle,
+                            )),
+                          ],
+                        ),
+                        TableRow(
+                          children: [
+                            //feels like
+                            Center(
+                                child: Text(
+                              'Minimum',
+                              style: textStyle,
+                            )),
+                            //feels like value
+                            Center(
+                                child: Text(
+                              temp_min.toString(),
+                              style: textStyle,
+                            )),
+                          ],
+                        ),
+                        TableRow(
+                          children: [
+                            //feels like
+                            Center(
+                                child: Text(
+                              'Maximum',
+                              style: textStyle,
+                            )),
+                            //feels like value
+                            Center(
+                                child: Text(
+                              temp_max.toString(),
+                              style: textStyle,
+                            )),
+                          ],
+                        ),
+                        TableRow(
+                          children: [
+                            //feels like
+                            Center(
+                                child: Text(
+                              'Pressure',
+                              style: textStyle,
+                            )),
+                            //feels like value
+                            Center(
+                                child: Text(
+                              pressure.toString(),
+                              style: textStyle,
+                            )),
+                          ],
+                        ),
+                        TableRow(
+                          children: [
+                            //feels like
+                            Center(
+                                child: Text(
+                              'Humidity',
+                              style: textStyle,
+                            )),
+                            //feels like value
+                            Center(
+                                child: Text(
+                              humidity.toString(),
+                              style: textStyle,
+                            )),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-              Text(
-                main,
-                style: textStyle,
-              ),
-              Text(
-                description,
-                style: textStyle,
-              )
             ],
           ),
         )));

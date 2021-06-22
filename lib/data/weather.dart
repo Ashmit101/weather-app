@@ -6,9 +6,10 @@ class Weather {
   Map<String, dynamic> temperature;
   num sunrise;
   num sunset;
+  String icon;
 
   Weather(this.name, this.main, this.description, this.temperature, this.wind,
-      this.sunrise, this.sunset);
+      this.sunrise, this.sunset, this.icon);
 
   Weather.fromJsonMap(Map<String, dynamic> weatherMap)
       : name = weatherMap['name'] as String,
@@ -17,7 +18,8 @@ class Weather {
         sunrise = weatherMap['sys']['sunrise'] as num,
         sunset = weatherMap['sys']['sunset'] as num,
         wind = weatherMap['wind'],
-        temperature = weatherMap['main'];
+        temperature = weatherMap['main'],
+        icon = weatherMap['weather'][0]['icon'];
 
   // var windMap = {
   //   'speed': weatherMap['wind']['speed'] as double,
