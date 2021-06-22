@@ -48,6 +48,10 @@ class _CurrentDetailsState extends State<CurrentDetails> {
     double speed = weather.wind['speed'];
     int degree = weather.wind['deg'];
 
+    //Sunrise and sunset
+    num sunrise = weather.sunrise;
+    num sunset = weather.sunset;
+
     TextStyle textStyle = TextStyle(fontSize: 18);
     TextStyle tempStyle = TextStyle(fontSize: 30);
 
@@ -207,6 +211,36 @@ class _CurrentDetailsState extends State<CurrentDetails> {
                         ),
                       ],
                     ),
+                  ],
+                ),
+              ),
+              Card(
+                child: Table(
+                  children: [
+                    TableRow(children: [
+                      Center(
+                          child: Text(
+                        'Sunrise',
+                        style: textStyle,
+                      )),
+                      Center(
+                          child: Text(
+                        sunrise.toString(),
+                        style: textStyle,
+                      )),
+                    ]),
+                    TableRow(children: [
+                      Center(
+                          child: Text(
+                        'Sunset',
+                        style: textStyle,
+                      )),
+                      Center(
+                          child: Text(
+                        sunset.toString(),
+                        style: textStyle,
+                      )),
+                    ]),
                   ],
                 ),
               ),
