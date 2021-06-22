@@ -21,15 +21,6 @@ class Weather {
         temperature = weatherMap['main'],
         icon = weatherMap['weather'][0]['icon'];
 
-  // var windMap = {
-  //   'speed': weatherMap['wind']['speed'] as double,
-  //   'deg': weatherMap['wind']['speed'] as int
-  // };
-
-  // var tempMap={
-  //   'temp':weatherMap['main'][]
-  // }
-
   @override
   String toString() {
     var weatherStr = '$name\n$main\n$description';

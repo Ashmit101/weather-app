@@ -44,6 +44,10 @@ class _CurrentDetailsState extends State<CurrentDetails> {
     int pressure = weather.temperature['pressure'];
     int humidity = weather.temperature['humidity'];
 
+    //Wind data
+    double speed = weather.wind['speed'];
+    int degree = weather.wind['deg'];
+
     TextStyle textStyle = TextStyle(fontSize: 18);
     TextStyle tempStyle = TextStyle(fontSize: 30);
 
@@ -58,21 +62,12 @@ class _CurrentDetailsState extends State<CurrentDetails> {
           child: Column(
             // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // Row(children: [
-              //   Image.network("http://openweathermap.org/img/wn/$icon@2x.png"),
-              //   Expanded(
-              //       child: Column(
-              //     children: [Text(main), Text(description)],
-              //   ))
-              // ]),
-
               Card(
                   child: ListTile(
                       leading: Image.network(
                           "http://openweathermap.org/img/wn/$icon@2x.png"),
                       title: Text(main),
                       subtitle: Text(description))),
-
               Card(
                 child: Column(
                   children: [
@@ -160,6 +155,52 @@ class _CurrentDetailsState extends State<CurrentDetails> {
                             Center(
                                 child: Text(
                               humidity.toString(),
+                              style: textStyle,
+                            )),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Card(
+                child: Column(
+                  children: [
+                    Text(
+                      'Wind',
+                      style: TextStyle(
+                        fontSize: 50,
+                      ),
+                    ),
+                    Table(
+                      children: [
+                        TableRow(
+                          children: [
+                            Center(
+                                child: Text(
+                              'Speed',
+                              style: textStyle,
+                            )),
+                            Center(
+                                child: Text(
+                              speed.toString(),
+                              style: textStyle,
+                            )),
+                          ],
+                        ),
+                        TableRow(
+                          children: [
+                            //feels like
+                            Center(
+                                child: Text(
+                              'Degree',
+                              style: textStyle,
+                            )),
+                            //feels like value
+                            Center(
+                                child: Text(
+                              degree.toString(),
                               style: textStyle,
                             )),
                           ],
