@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:weather/data/weather.dart';
 import 'dart:convert';
 
+import 'package:weather/screens/side_locatons.dart';
+
 class CurrentDetails extends StatefulWidget {
   String message;
 
@@ -58,6 +60,11 @@ class _CurrentDetailsState extends State<CurrentDetails> {
     return Scaffold(
         appBar: AppBar(
           title: Text(name),
+          actions: [
+            IconButton(
+                onPressed: () => goToLocations(context),
+                icon: Icon(Icons.public)),
+          ],
         ),
         body: SingleChildScrollView(
             child: Container(
@@ -248,4 +255,9 @@ class _CurrentDetailsState extends State<CurrentDetails> {
           ),
         )));
   }
+}
+
+goToLocations(BuildContext context) {
+  print('Pressed more locations');
+  Navigator.push(context, MaterialPageRoute(builder: (context) => Locations()));
 }

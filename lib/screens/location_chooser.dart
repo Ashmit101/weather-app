@@ -106,7 +106,7 @@ void saveLocation(String city) async {
 }
 
 gotoCurrentWeather(BuildContext context, String message) {
-  Navigator.push(context,
+  Navigator.pushReplacement(context,
       MaterialPageRoute(builder: (context) => CurrentDetails(message)));
 }
 
