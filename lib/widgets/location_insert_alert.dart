@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../tools/weather_downloader.dart';
+import '../data/data.dart';
 
 TextEditingController locationController = TextEditingController();
 
@@ -23,7 +25,12 @@ class _AddLocationState extends State<AddLocation> {
       actions: [
         TextButton(
             onPressed: () => Navigator.pop(context), child: Text('Cancel')),
-        TextButton(onPressed: () => getLocation(), child: Text('Add')),
+        TextButton(
+            onPressed: () {
+              getLocation();
+              Navigator.pop(context);
+            },
+            child: Text('Add')),
       ],
       elevation: 24.0,
     );
@@ -35,6 +42,19 @@ getLocation() async {
   print('Location : $location');
   var response = await DownloadWeather.downloadWeatherJsonWithName(location);
   if (response.statusCode == 200) {
-    print('Location added');
+    addToSharedPrefs(location);
   }
+}
+
+//Add the location to the shared preferences
+void addToSharedPrefs(String location) async {
+  SharedPreferences sp = await SharedPreferences.getInstance();
+  //Get the list of locations or create if null
+  List<String>? locations =
+      sp.getStringList(Strings.multipleLocationKey) ?? <String>[];
+  //Add the location to the list
+  locations.add(location);
+  //Store the location to the shared prefs
+  await sp.setStringList(Strings.multipleLocationKey, locations);
+  print('Location added to the shared prefs');
 }

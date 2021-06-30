@@ -100,6 +100,7 @@ void getLocation(BuildContext context) async {
   downloadWeatherJsonWithName(context, savedLocation);
 }
 
+//Save location to the shared prefs
 void saveLocation(String city) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   await prefs.setString('location', city);
@@ -127,6 +128,7 @@ downloadWeatherJsonWithName(BuildContext context,
     print('Status code : ${response.statusCode}');
     if (response.statusCode == 200) {
       if (savedLocation == null) {
+        //Save location for future
         saveLocation(cityName);
       }
       gotoCurrentWeather(context, message);
