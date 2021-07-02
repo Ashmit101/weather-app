@@ -56,5 +56,5 @@ void addToSharedPrefs(String location) async {
   locations.add(location);
   //Store the location to the shared prefs
   await sp.setStringList(Strings.multipleLocationKey, locations);
-  print('Location added to the shared prefs');
+  print('$location added to the shared prefs');
 }
