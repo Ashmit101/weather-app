@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:weather/data/weather.dart';
 import 'dart:convert';
 
+import 'package:weather/screens/side_locatons.dart';
+
 class CurrentDetails extends StatefulWidget {
   String message;
 
@@ -38,9 +40,9 @@ class _CurrentDetailsState extends State<CurrentDetails> {
 
     //Temperature data
     double temperature = weather.temperature['temp'];
-    double feels_like = weather.temperature['feels_like'];
-    double temp_min = weather.temperature['temp_min'];
-    double temp_max = weather.temperature['temp_max'];
+    double feelsLike = weather.temperature['feels_like'];
+    double tempMin = weather.temperature['temp_min'];
+    double tempMax = weather.temperature['temp_max'];
     int pressure = weather.temperature['pressure'];
     int humidity = weather.temperature['humidity'];
 
@@ -53,11 +55,16 @@ class _CurrentDetailsState extends State<CurrentDetails> {
     num sunset = weather.sunset;
 
     TextStyle textStyle = TextStyle(fontSize: 18);
-    TextStyle tempStyle = TextStyle(fontSize: 30);
+    //TextStyle tempStyle = TextStyle(fontSize: 30);
 
     return Scaffold(
         appBar: AppBar(
           title: Text(name),
+          actions: [
+            IconButton(
+                onPressed: () => goToLocations(context),
+                icon: Icon(Icons.public)),
+          ],
         ),
         body: SingleChildScrollView(
             child: Container(
@@ -94,7 +101,7 @@ class _CurrentDetailsState extends State<CurrentDetails> {
                             //feels like value
                             Center(
                                 child: Text(
-                              feels_like.toString(),
+                              feelsLike.toString(),
                               style: textStyle,
                             )),
                           ],
@@ -110,7 +117,7 @@ class _CurrentDetailsState extends State<CurrentDetails> {
                             //feels like value
                             Center(
                                 child: Text(
-                              temp_min.toString(),
+                              tempMin.toString(),
                               style: textStyle,
                             )),
                           ],
@@ -126,7 +133,7 @@ class _CurrentDetailsState extends State<CurrentDetails> {
                             //feels like value
                             Center(
                                 child: Text(
-                              temp_max.toString(),
+                              tempMax.toString(),
                               style: textStyle,
                             )),
                           ],
@@ -248,4 +255,9 @@ class _CurrentDetailsState extends State<CurrentDetails> {
           ),
         )));
   }
+}
+
+goToLocations(BuildContext context) {
+  print('Pressed more locations');
+  Navigator.push(context, MaterialPageRoute(builder: (context) => Locations()));
 }
