@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:weather/screens/today_details.dart';
@@ -19,10 +19,15 @@ class _LocationChooserState extends State<LocationChooser> {
   String city = '';
 
   @override
+  void initState() {
+    getLocation(context);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final ButtonStyle buttonStyle =
         ElevatedButton.styleFrom(textStyle: TextStyle(fontSize: 24));
-    getLocation(context);
 
     return Scaffold(
         appBar: AppBar(
@@ -107,8 +112,10 @@ void saveLocation(String city) async {
 }
 
 gotoCurrentWeather(BuildContext context, String message) {
-  Navigator.pushReplacement(context,
-      MaterialPageRoute(builder: (context) => CurrentDetails(message)));
+  SchedulerBinding.instance?.addPostFrameCallback((timeStamp) {
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (context) => CurrentDetails(message)));
+  });
 }
 
 downloadWeatherJsonWithName(BuildContext context,
