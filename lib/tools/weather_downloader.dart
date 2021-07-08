@@ -1,5 +1,6 @@
 import '../data/data.dart';
 import 'package:http/http.dart' as http;
+
 import 'dart:convert';
 
 class DownloadWeather {
@@ -7,6 +8,7 @@ class DownloadWeather {
     //Get http response
     var response = await http.get(Strings.oneCallApi(27.700769, 85.300140));
     var statusCode = response.statusCode;
+
     if (statusCode == 200) {
       print('$statusCode : Weather data successfully downloaded');
     } else {
@@ -21,4 +23,5 @@ class DownloadWeather {
   //   Map<String, dynamic> weatherMap = jsonDecode(response.body);
   //   return Weather.fromJsonMap(weatherMap);
   // }
+
 }

@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:weather/screens/today_details.dart';
@@ -19,10 +19,15 @@ class _LocationChooserState extends State<LocationChooser> {
   String city = '';
 
   @override
+  void initState() {
+    getLocation(context);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final ButtonStyle buttonStyle =
         ElevatedButton.styleFrom(textStyle: TextStyle(fontSize: 24));
-    getLocation(context);
 
     return Scaffold(
         appBar: AppBar(
@@ -100,14 +105,17 @@ void getLocation(BuildContext context) async {
   downloadWeatherJsonWithName(context, savedLocation);
 }
 
+//Save location to the shared prefs
 void saveLocation(String city) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   await prefs.setString('location', city);
 }
 
 gotoCurrentWeather(BuildContext context, String message) {
-  Navigator.push(context,
-      MaterialPageRoute(builder: (context) => CurrentDetails(message)));
+  SchedulerBinding.instance?.addPostFrameCallback((timeStamp) {
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (context) => CurrentDetails(message)));
+  });
 }
 
 downloadWeatherJsonWithName(BuildContext context,
@@ -127,6 +135,7 @@ downloadWeatherJsonWithName(BuildContext context,
     print('Status code : ${response.statusCode}');
     if (response.statusCode == 200) {
       if (savedLocation == null) {
+        //Save location for future
         saveLocation(cityName);
       }
       gotoCurrentWeather(context, message);

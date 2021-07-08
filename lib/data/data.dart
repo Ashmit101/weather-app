@@ -24,4 +24,4 @@ class Strings {
         'http://api.openweathermap.org/geo/1.0/direct?q=$cityName&appid=$apiKey');
     return uri;
   }
-}
+
