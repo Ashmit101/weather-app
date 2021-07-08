@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'screens/location_chooser.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 void main() {
   runApp(MyApp());
@@ -8,6 +9,7 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    checkInternet();
     return MaterialApp(
       title: 'Weather',
       theme: ThemeData(
@@ -15,5 +17,16 @@ class MyApp extends StatelessWidget {
       ),
       home: LocationChooser(),
     );
+  }
+
+  checkInternet() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile) {
+      print('Connected : mobile');
+    } else if (connectivityResult == ConnectivityResult.wifi) {
+      print('Connected : wifi');
+    } else {
+      print('Not connected : Offline');
+    }
   }
 }
