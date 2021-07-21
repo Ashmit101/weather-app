@@ -19,7 +19,7 @@ class Locations extends StatefulWidget {
 class _LocationsState extends State<Locations> {
   @override
   void initState() {
-    _getLocations();
+    _getSavedLocations();
     super.initState();
   }
 
@@ -51,23 +51,12 @@ class _LocationsState extends State<Locations> {
         });
   }
 
-  void _getLocations() async {
-    SharedPreferences sp = await SharedPreferences.getInstance();
-    locations = sp.getStringList(Strings.multipleLocationKey);
-    print(locations);
-    List<Weather> weathers = <Weather>[];
-    locations?.forEach((element) async {
-      print('Adding weather element');
-      print('Number of weathers: ${locations?.length}');
-      weathers.add(await DownloadWeather.downlaodWeatherWithName(element));
-      if (weathers.length == locations?.length) {
-        weathers.forEach((element) {
-          print(element.name);
-        });
-        setState(() {
-          _weather = weathers;
-        });
-      }
-    });
+  void _getSavedLocations() async {
+    var list = await sembastDb.getSideLocations();
+    if (list == null) {
+      print('The side locations is null');
+    } else {
+      print('Side location type: ${list.runtimeType}');
+    }
   }
 }
