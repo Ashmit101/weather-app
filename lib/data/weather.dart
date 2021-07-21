@@ -1,29 +1,60 @@
 class Weather {
-  String main;
-  String description;
-  String name;
-  Map<String, dynamic> wind;
-  Map<String, dynamic> temperature;
-  num sunrise;
-  num sunset;
-  String icon;
+  //Fields
+  num time;
+  num? sunrise;
+  num? sunset;
+  dynamic temp;
+  dynamic feelsLike;
+  num pressure;
+  num humidity;
+  num dewPoint;
+  num uvi;
+  num clouds;
+  num? visibility;
+  num windSpeed;
+  int windDeg;
+  int? weatherID;
+  String? weatherMain;
+  String? weatherDescription;
+  String? weatherIcon;
+  String? location;
 
-  Weather(this.name, this.main, this.description, this.temperature, this.wind,
-      this.sunrise, this.sunset, this.icon);
+  Weather(
+      this.weatherMain,
+      this.weatherDescription,
+      this.weatherID,
+      this.weatherIcon,
+      this.time,
+      this.temp,
+      this.feelsLike,
+      this.pressure,
+      this.humidity,
+      this.dewPoint,
+      this.uvi,
+      this.clouds,
+      this.visibility,
+      this.windSpeed,
+      this.windDeg,
+      [this.sunrise,
+      this.sunset]);
 
-  Weather.fromJsonMap(Map<String, dynamic> weatherMap)
-      : name = weatherMap['name'] as String,
-        main = weatherMap['weather'][0]['main'] as String,
-        description = weatherMap['weather'][0]['description'] as String,
-        sunrise = weatherMap['sys']['sunrise'] as num,
-        sunset = weatherMap['sys']['sunset'] as num,
-        wind = weatherMap['wind'],
-        temperature = weatherMap['main'],
-        icon = weatherMap['weather'][0]['icon'];
-
-  @override
-  String toString() {
-    var weatherStr = '$name\n$main\n$description';
-    return weatherStr;
-  }
+  Weather.fromJsonMap(Map<String, dynamic> currentMap)
+      : time = currentMap['dt'] as num,
+        sunrise = currentMap['sunrise'],
+        sunset = currentMap['sunset'],
+        temp = currentMap['temp'],
+        feelsLike = currentMap['feels_like'],
+        pressure = currentMap['pressure'] as num,
+        humidity = currentMap['humidity'] as num,
+        dewPoint = currentMap['dew_point'] as num,
+        clouds = currentMap['clouds'] as num,
+        uvi = currentMap['uvi'] as num,
+        visibility = currentMap['visibility'],
+        windSpeed = currentMap['wind_speed'] as num,
+        windDeg = currentMap['wind_deg'] as int,
+        weatherID = currentMap['weather'][0]['id'] as int,
+        weatherMain = currentMap['weather'][0]['main'] as String,
+        weatherDescription = currentMap['weather'][0]['description'] as String,
+        weatherIcon = currentMap['weather'][0]['icon'] as String,
+        location = currentMap['location'];
 }

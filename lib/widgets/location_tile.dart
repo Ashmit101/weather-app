@@ -9,7 +9,6 @@ Weather? _weather;
 class LocationTile extends StatefulWidget {
   LocationTile(weather) {
     _weather = weather;
-    print(weather.name);
   }
 
   @override
@@ -21,10 +20,10 @@ class _LocationTileState extends State<LocationTile> {
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
-        title: Text(_weather!.name),
+        title: Text(_weather!.location!),
         leading: Image.network(
-            "http://openweathermap.org/img/wn/${_weather!.icon}@2x.png"),
-        subtitle: Text(_weather!.main),
+            "http://openweathermap.org/img/wn/${_weather!.weatherIcon}@2x.png"),
+        subtitle: Text(_weather!.weatherMain!),
       ),
     );
   }
