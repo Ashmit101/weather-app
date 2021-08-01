@@ -12,17 +12,21 @@ class HourlyWeatherTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Units units = Units();
-    return Container(
-      child: Column(
-        children: [
-          Text(Format.getHourMinute(
-              Constants.getDateTimeFromUTC(hourlyWeather.time.toString()))),
-          Image.network(
-            Constants.getIcon(hourlyWeather.weatherIcon!).toString(),
-            scale: 2,
-          ),
-          Text('${hourlyWeather.temp}${units.getTempUnit()}')
-        ],
+    return Card(
+      margin: EdgeInsets.all(8),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Text(Format.getHourMinute(
+                Constants.getDateTimeFromUTC(hourlyWeather.time.toString()))),
+            Image.network(
+              Constants.getIcon(hourlyWeather.weatherIcon!).toString(),
+              scale: 2,
+            ),
+            Text('${hourlyWeather.temp}${units.getTempUnit()}')
+          ],
+        ),
       ),
     );
   }

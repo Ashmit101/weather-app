@@ -11,7 +11,7 @@ class DailyWeatherTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Units units = Units();
-    return Container(
+    return Card(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
