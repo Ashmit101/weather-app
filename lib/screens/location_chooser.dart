@@ -15,74 +15,171 @@ TextEditingController locationTextController = TextEditingController();
 SembastDb sembastDb = SembastDb();
 
 class LocationChooser extends StatefulWidget {
+  LocationChooser() {
+    print('location chooser constructor');
+  }
   @override
-  _LocationChooserState createState() => _LocationChooserState();
+  _LocationChooserState createState() {
+    return _LocationChooserState();
+  }
 }
 
 class _LocationChooserState extends State<LocationChooser> {
   String weatherInfo = '';
   String city = '';
 
-  @override
-  void initState() {
-    getLocation(context);
-    super.initState();
-  }
+  var _isProgressVisible = false;
+
+  var _isDeviceLocationProgressVisible = false;
 
   @override
   Widget build(BuildContext context) {
+    String message = 'Starting...';
+    TextStyle messageStyle = TextStyle(
+        color: Colors.white, fontSize: 12, decoration: TextDecoration.none);
+
+    // print('Location chooser building');
+    Future<List<GeoLocation>> savedLocations = getSavedLocation();
     final ButtonStyle buttonStyle =
         ElevatedButton.styleFrom(textStyle: TextStyle(fontSize: 24));
 
-    return Scaffold(
-        appBar: AppBar(
-          title: Text('Location'),
-        ),
-        body: SingleChildScrollView(
-          child: Container(
-            padding: EdgeInsets.all(15.0),
-            child: Column(
-              children: [
-                Icon(
-                  Icons.explore,
-                  size: 50,
-                ),
-                Text("Search your location"),
-                TextField(
-                  controller: locationTextController,
-                ),
-                ElevatedButton(
-                  style: buttonStyle,
-                  onPressed: () {
-                    String cityName = locationTextController.text;
-                    if (cityName != '') {
-                      getLocationCoordinate(context, cityName);
-                    }
-                    //downloadWeatherJsonWithName(context);
-                  },
-                  child: Text('Submit'),
-                ),
-                ElevatedButton(
-                  style: buttonStyle,
-                  onPressed: () => getDeviceLocation(context),
-                  child: Text('Use device location'),
-                ),
-              ],
+    return FutureBuilder(
+        future: savedLocations,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            //After resolving the future
+            if (snapshot.hasData) {
+              var savedLocation = snapshot.data as List<GeoLocation>;
+              print('Object received');
+              if (savedLocation.isEmpty) {
+                return Scaffold(
+                    appBar: AppBar(
+                      title: Text('Location'),
+                    ),
+                    body: SingleChildScrollView(
+                      child: Container(
+                        padding: EdgeInsets.all(15.0),
+                        child: Column(
+                          children: [
+                            Icon(
+                              Icons.explore,
+                              size: 50,
+                            ),
+                            Text("Search your location"),
+                            TextField(
+                              controller: locationTextController,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                ElevatedButton(
+                                  style: buttonStyle,
+                                  onPressed: () {
+                                    String cityName =
+                                        locationTextController.text;
+                                    if (cityName != '') {
+                                      setState(() {
+                                        _isProgressVisible = true;
+                                      });
+                                      getLocationCoordinate(context, cityName);
+                                    }
+                                    //downloadWeatherJsonWithName(context);
+                                  },
+                                  child: Text('Submit'),
+                                ),
+                                Visibility(
+                                  visible: _isProgressVisible,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: SizedBox(
+                                        height: 15,
+                                        width: 15,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 3,
+                                        )),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            ElevatedButton(
+                              style: buttonStyle,
+                              onPressed: () {
+                                setState(() {
+                                  _isDeviceLocationProgressVisible = true;
+                                });
+                                return getDeviceLocation(context);
+                              },
+                              child: Text('Use device location'),
+                            ),
+                            Visibility(
+                              visible: _isDeviceLocationProgressVisible,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: SizedBox(
+                                    height: 15,
+                                    width: 15,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 3,
+                                    )),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ));
+              }
+              gotoCurrentWeather(context, savedLocation[0]);
+            }
+          }
+          //While waiting
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('Weather'),
             ),
-          ),
-        ));
+            body: Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: FlutterLogo(),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: CircularProgressIndicator(),
+                  ),
+                  Text(
+                    message,
+                    style: messageStyle,
+                  )
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  Future<List<GeoLocation>> getSavedLocation() async {
+    List<GeoLocation> savedLocation = await sembastDb.getLocation();
+    return savedLocation;
   }
 }
 
 void getLocationCoordinate(BuildContext context, String cityName) async {
   List<GeoLocation> geoLocationList =
       await DownloadWeather.downloadLocationCoords(cityName);
+  showDialogWithLocations(context, geoLocationList);
+}
+
+void showDialogWithLocations(
+    BuildContext context, List<GeoLocation> geoLocations) async {
   //Location chosen by the user
   var chosenLocation = await showDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return ChooseCoord.fromGeoList(geoLocationList);
+        return ChooseCoord.fromGeoList(geoLocations);
       });
   print("Saving : ${chosenLocation.name}");
   int id = await sembastDb.addLocation(chosenLocation);
@@ -123,19 +220,14 @@ getDeviceLocation(BuildContext context) async {
 
   Position currentPosition = await Geolocator.getCurrentPosition();
   print(currentPosition);
-  downloadWeatherJsonWithCoord(context, currentPosition);
-}
-
-void getLocation(BuildContext context) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  String? savedLocation = prefs.getString('location');
-  downloadWeatherJsonWithName(context, savedLocation);
-}
-
-//Save location to the shared prefs
-void saveLocation(String city) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  await prefs.setString('location', city);
+  List<dynamic> locations = await DownloadWeather.downloadLocationNameFromCoord(
+      currentPosition.latitude, currentPosition.longitude);
+  var location = locations[0] as Map<String, dynamic>;
+  print('List has ${locations.length} items');
+  List<GeoLocation> geoLocationList =
+      await DownloadWeather.downloadLocationCoords(
+          location['local_names']['en']);
+  showDialogWithLocations(context, geoLocationList);
 }
 
 gotoCurrentWeather(BuildContext context, GeoLocation location) {
@@ -143,52 +235,4 @@ gotoCurrentWeather(BuildContext context, GeoLocation location) {
     Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (context) => CurrentDetails(location)));
   });
-}
-
-downloadWeatherJsonWithName(BuildContext context,
-    [String? savedLocation]) async {
-  //Get http response
-  String message;
-  String cityName;
-  if (savedLocation != null) {
-    cityName = savedLocation;
-  } else {
-    cityName = locationTextController.text;
-  }
-  if (cityName.length > 1) {
-    var response = await http.get(Uri.parse(
-        "http://api.openweathermap.org/data/2.5/weather?q=$cityName&appid=${Constants.apiKey}"));
-    message = response.body;
-    print('Status code : ${response.statusCode}');
-    if (response.statusCode == 200) {
-      if (savedLocation == null) {
-        //Save location for future
-        saveLocation(cityName);
-      }
-      //gotoCurrentWeather(context, message);
-    }
-  } else {
-    message = 'Please enter a city name';
-  }
-}
-
-downloadWeatherJsonWithCoord(BuildContext context, Position position) async {
-  print('Downloading from device location');
-
-  var lat = position.latitude;
-  var lon = position.longitude;
-
-  String message;
-
-  var response = await http.get(Uri.parse(
-      "http://api.openweathermap.org/data/2.5/weather?lat=$lat&lon=$lon&appid=${Constants.apiKey}"));
-  message = response.body;
-
-  if (response.statusCode == 200) {
-    var mappedWeather = jsonDecode(message);
-    saveLocation(mappedWeather['name']);
-    //gotoCurrentWeather(context, message);
-  } else {
-    print(response.statusCode);
-  }
 }

@@ -14,18 +14,20 @@ class HourlyWeatherTile extends StatelessWidget {
     Units units = Units();
     return Card(
       margin: EdgeInsets.all(8),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Text(Format.getHourMinute(
-                Constants.getDateTimeFromUTC(hourlyWeather.time.toString()))),
-            Image.network(
-              Constants.getIcon(hourlyWeather.weatherIcon!).toString(),
-              scale: 2,
-            ),
-            Text('${hourlyWeather.temp}${units.getTempUnit()}')
-          ],
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              Text(Format.getHourMinute(
+                  Constants.getDateTimeFromUTC(hourlyWeather.time.toString()))),
+              Image.network(
+                Constants.getIcon(hourlyWeather.weatherIcon!).toString(),
+                scale: 2,
+              ),
+              Text('${hourlyWeather.temp}${units.getTempUnit()}')
+            ],
+          ),
         ),
       ),
     );

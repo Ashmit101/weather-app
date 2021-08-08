@@ -87,7 +87,7 @@ class _CurrentDetailsState extends State<CurrentDetails> {
                   style: titleStyle,
                 ),
                 Container(
-                  height: 130,
+                  height: 150,
                   child: ListView.builder(
                     shrinkWrap: true,
                     itemCount: weather.hourlyWeather.length,
