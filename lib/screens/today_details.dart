@@ -38,6 +38,10 @@ class _CurrentDetailsState extends State<CurrentDetails> {
   @override
   Widget build(BuildContext context) {
     Future<WeatherForecast> weatherForecast = downloadWeatherForecast(location);
+    TextStyle titleStyle = TextStyle(
+      fontWeight: FontWeight.bold,
+      fontSize: 16,
+    );
 
     return FutureBuilder(
       builder: (context, snapshot) {
@@ -63,22 +67,29 @@ class _CurrentDetailsState extends State<CurrentDetails> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Image.network(
-                          Constants.getIcon(weather.currentWeather.weatherIcon!)
-                              .toString()),
+                        Constants.getIcon(weather.currentWeather.weatherIcon!)
+                            .toString(),
+                        scale: 0.5,
+                      ),
                       Text(weather.currentWeather.weatherMain!),
                       Text(
                           '${weather.currentWeather.temp}${units.getTempUnit()}'),
                       Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
+                            Icon(Icons.air),
                             Text(weather.currentWeather.windSpeed.toString()),
                             Text(weather.currentWeather.humidity.toString())
                           ]),
                     ]),
-                Text('Today'),
+                Text(
+                  'Today',
+                  style: titleStyle,
+                ),
                 Container(
-                  height: 100,
+                  height: 150,
                   child: ListView.builder(
+                    shrinkWrap: true,
                     itemCount: weather.hourlyWeather.length,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (BuildContext context, int index) {
@@ -87,12 +98,10 @@ class _CurrentDetailsState extends State<CurrentDetails> {
                     },
                   ),
                 ),
-                Text('Coming week'),
-                // ListView.builder(
-                //     itemCount: weather.dailyWeather.length,
-                //     itemBuilder: (BuildContext context, int index) {
-                //       return DailyWeatherTile(weather.dailyWeather[index]);
-                //     }),
+                Text(
+                  'Coming week',
+                  style: titleStyle,
+                ),
                 Column(
                   children: getDailes(weather.dailyWeather),
                 ),

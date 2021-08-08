@@ -70,4 +70,10 @@ class DownloadWeather {
   //   return Weather.fromJsonMap(weatherMap);
   // }
 
+  static Future downloadLocationNameFromCoord(double lat, double lon) async {
+    var response = await http.get(Constants.getLocationFromCoord(lat, lon));
+    print(response.body);
+    List<dynamic> responseList = jsonDecode(response.body);
+    return responseList;
+  }
 }

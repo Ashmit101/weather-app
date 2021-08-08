@@ -39,11 +39,14 @@ class SembastDb {
 
   Future<int> addLocation(GeoLocation location) async {
     await init();
+    await locationStore.delete(_db!);
+    print('Deleted previous location');
     int id = await locationStore.add(_db!, location.toMap());
+    print('Added new location');
     return id;
   }
 
-  Future getLocation() async {
+  Future<List<GeoLocation>> getLocation() async {
     await init();
     final snapshot = await locationStore.find(_db!);
     return snapshot.map((item) {
