@@ -1,13 +1,9 @@
-import 'dart:convert';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:weather/data/geolocation.dart';
 import 'package:weather/screens/today_details.dart';
 import 'package:weather/tools/weather_downloader.dart';
 import 'package:weather/widgets/choose_coord.dart';
-import '../data/data.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:geolocator/geolocator.dart';
 import '../tools/sembast_db.dart';
 

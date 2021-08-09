@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:weather/data/daily_weather.dart';
-import 'package:weather/data/weather.dart';
 import 'package:weather/data/weather_forecast.dart';
 import 'package:weather/tools/weather_downloader.dart';
 import 'package:weather/widgets/daily_weather_tile.dart';
-import 'dart:convert';
 import '../data/geolocation.dart';
 import 'package:weather/screens/side_locatons.dart';
 import '../data/data.dart';
@@ -15,7 +13,7 @@ import '../data/units.dart';
 Units units = Units();
 
 class CurrentDetails extends StatefulWidget {
-  GeoLocation location;
+  final GeoLocation location;
 
   CurrentDetails(this.location);
 

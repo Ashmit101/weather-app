@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:weather/data/data.dart';
 import 'package:weather/data/weather.dart';
-import 'package:weather/tools/weather_downloader.dart';
 import 'package:weather/widgets/location_insert_alert.dart';
 import 'package:weather/widgets/location_tile.dart';
 
