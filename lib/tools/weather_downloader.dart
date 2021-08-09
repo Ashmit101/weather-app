@@ -43,7 +43,6 @@ class DownloadWeather {
   static Future<List<GeoLocation>> downloadLocationCoords(
       String cityName) async {
     List<GeoLocation> geoLocations = <GeoLocation>[];
-    List<Map<String, dynamic>> geoLocationsMap = [];
     var response = await http.get(Constants.getCoordFromLocation(cityName));
     var statusCode = response.statusCode;
     if (statusCode != 200) {
@@ -63,12 +62,6 @@ class DownloadWeather {
     }
     return geoLocations;
   }
-
-  // static Future<Weather> downlaodWeatherWithName(String cityName) async {
-  //   http.Response response = await downloadWeatherJsonWithName(cityName);
-  //   Map<String, dynamic> weatherMap = jsonDecode(response.body);
-  //   return Weather.fromJsonMap(weatherMap);
-  // }
 
   static Future downloadLocationNameFromCoord(double lat, double lon) async {
     var response = await http.get(Constants.getLocationFromCoord(lat, lon));

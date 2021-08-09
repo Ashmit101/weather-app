@@ -1,11 +1,7 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'screens/location_chooser.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'tools/sembast_db.dart';
-import 'data/geolocation.dart';
 
 SembastDb sembastDb = SembastDb();
 
