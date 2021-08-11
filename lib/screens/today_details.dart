@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:weather/data/daily_weather.dart';
 import 'package:weather/data/weather_forecast.dart';
+import 'package:weather/screens/location_chooser.dart';
 import 'package:weather/tools/weather_downloader.dart';
 import 'package:weather/widgets/daily_weather_tile.dart';
 import '../data/geolocation.dart';
-import 'package:weather/screens/side_locatons.dart';
 import '../data/data.dart';
 import '../widgets/hourly_weather_tile.dart';
 import '../data/units.dart';
+import '../widgets/add_location.dart';
 
 //Constants, objects used all over
 Units units = Units();
@@ -25,11 +26,6 @@ class _CurrentDetailsState extends State<CurrentDetails> {
   GeoLocation location;
   late Map<String, dynamic> weatherMap;
   String load = 'loading';
-
-  // TextEditingController nameController = TextEditingController();
-  // TextEditingController mainController = TextEditingController();
-  // TextEditingController descriptionController = TextEditingController();
-  // TextEditingController temperatureController = TextEditingController();
 
   _CurrentDetailsState(this.location);
 
@@ -59,6 +55,23 @@ class _CurrentDetailsState extends State<CurrentDetails> {
             return Scaffold(
               appBar: AppBar(
                 title: Text(location.name),
+                actions: [
+                  PopupMenuButton(
+                    onSelected: (value) {
+                      print('Value $value selected');
+                      switch (value) {
+                        case PopUpItem.changeLocation:
+                          changeLocation(context);
+                      }
+                    },
+                    itemBuilder: (context) => [
+                      PopupMenuItem(
+                        value: PopUpItem.changeLocation,
+                        child: Text('Change location'),
+                      )
+                    ],
+                  ),
+                ],
               ),
               body: ListView(children: [
                 Column(
@@ -133,9 +146,24 @@ class _CurrentDetailsState extends State<CurrentDetails> {
     });
     return dailyTiles;
   }
+
+  changeLocation(BuildContext context) async {
+    var changedLocation = await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AddLocation(true, title: 'Change Location');
+        });
+
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => CurrentDetails(changedLocation)));
+  }
 }
 
-goToLocations(BuildContext context) {
-  print('Pressed more locations');
-  Navigator.push(context, MaterialPageRoute(builder: (context) => Locations()));
-}
+// goToLocations(BuildContext context) {
+//   print('Pressed more locations');
+//   Navigator.push(context, MaterialPageRoute(builder: (context) => Locations()));
+// }
+
+enum PopUpItem { changeLocation }

@@ -8,14 +8,14 @@ import '../data/data.dart';
 TextEditingController locationController = TextEditingController();
 SembastDb sembastDb = SembastDb();
 
-class AddLocation extends StatefulWidget {
-  const AddLocation({Key? key}) : super(key: key);
+class InsertLocation extends StatefulWidget {
+  const InsertLocation({Key? key}) : super(key: key);
 
   @override
-  _AddLocationState createState() => _AddLocationState();
+  _InsertLocationState createState() => _InsertLocationState();
 }
 
-class _AddLocationState extends State<AddLocation> {
+class _InsertLocationState extends State<InsertLocation> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(

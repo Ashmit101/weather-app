@@ -44,7 +44,7 @@ class _LocationsState extends State<Locations> {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AddLocation();
+          return InsertLocation();
         });
   }
 
