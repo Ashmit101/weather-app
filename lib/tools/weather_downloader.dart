@@ -1,15 +1,19 @@
 import 'package:weather/data/geolocation.dart';
+import 'package:weather/tools/sembast_db.dart';
 
 import '../data/data.dart';
 import 'package:http/http.dart' as http;
 
 import 'dart:convert';
 
+SembastDb sembastDb = SembastDb();
+
 class DownloadWeather {
   static Future<Map<String, dynamic>> downloadCurrentWeatherMap(
       GeoLocation location) async {
     //Get http response
-    var response = await http.get(Constants.getCurrentWeather(location.name));
+    var response = await http.get(Constants.getCurrentWeather(location.name,
+        api: await sembastDb.getApi()));
     var statusCode = response.statusCode;
 
     if (statusCode == 200) {
@@ -26,8 +30,9 @@ class DownloadWeather {
   static Future<Map<String, dynamic>> downloadWeatherJson(
       GeoLocation location) async {
     //Get http response
-    var response =
-        await http.get(Constants.oneCallApi(location.lat, location.lon));
+    var response = await http.get(Constants.oneCallApi(
+        location.lat, location.lon,
+        api: await sembastDb.getApi()));
     var statusCode = response.statusCode;
 
     if (statusCode == 200) {
@@ -43,7 +48,8 @@ class DownloadWeather {
   static Future<List<GeoLocation>> downloadLocationCoords(
       String cityName) async {
     List<GeoLocation> geoLocations = <GeoLocation>[];
-    var response = await http.get(Constants.getCoordFromLocation(cityName));
+    var response = await http.get(Constants.getCoordFromLocation(cityName,
+        api: await sembastDb.getApi()));
     var statusCode = response.statusCode;
     if (statusCode != 200) {
       print('$statusCode : Failure downloading weather.');

@@ -62,12 +62,20 @@ class _CurrentDetailsState extends State<CurrentDetails> {
                       switch (value) {
                         case PopUpItem.changeLocation:
                           changeLocation(context);
+                          break;
+                        case PopUpItem.changeApi:
+                          changeAPI(context);
+                          break;
                       }
                     },
                     itemBuilder: (context) => [
                       PopupMenuItem(
                         value: PopUpItem.changeLocation,
                         child: Text('Change location'),
+                      ),
+                      PopupMenuItem(
+                        value: PopUpItem.changeApi,
+                        child: Text('Change API'),
                       )
                     ],
                   ),
@@ -114,7 +122,7 @@ class _CurrentDetailsState extends State<CurrentDetails> {
                   style: titleStyle,
                 ),
                 Column(
-                  children: getDailes(weather.dailyWeather),
+                  children: getDailies(weather.dailyWeather),
                 ),
               ]),
             );
@@ -139,7 +147,7 @@ class _CurrentDetailsState extends State<CurrentDetails> {
     return weather;
   }
 
-  getDailes(List<DailyWeather> dailyWeathers) {
+  getDailies(List<DailyWeather> dailyWeathers) {
     var dailyTiles = <DailyWeatherTile>[];
     dailyWeathers.forEach((dailyWeather) {
       dailyTiles.add(DailyWeatherTile(dailyWeather));
@@ -159,6 +167,17 @@ class _CurrentDetailsState extends State<CurrentDetails> {
         MaterialPageRoute(
             builder: (context) => CurrentDetails(changedLocation)));
   }
+
+  void changeAPI(BuildContext context) async {
+    var changedAPI = await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AddLocation(true, title: 'Change API');
+        });
+
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (context) => CurrentDetails(location)));
+  }
 }
 
 // goToLocations(BuildContext context) {
@@ -166,4 +185,4 @@ class _CurrentDetailsState extends State<CurrentDetails> {
 //   Navigator.push(context, MaterialPageRoute(builder: (context) => Locations()));
 // }
 
-enum PopUpItem { changeLocation }
+enum PopUpItem { changeLocation, changeApi }
