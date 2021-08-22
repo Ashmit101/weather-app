@@ -47,7 +47,7 @@ class _LocationChooserState extends State<LocationChooser> {
     InputDecoration apiInputDecoration = InputDecoration(
       isDense: true,
       border: OutlineInputBorder(),
-      hintText: 'Your API key',
+      hintText: 'Your API key (Optional)',
     );
 
     return FutureBuilder(
