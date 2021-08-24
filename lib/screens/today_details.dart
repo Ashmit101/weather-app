@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:weather/data/daily_weather.dart';
 import 'package:weather/data/weather_forecast.dart';
-import 'package:weather/screens/location_chooser.dart';
 import 'package:weather/tools/weather_downloader.dart';
 import 'package:weather/widgets/daily_weather_tile.dart';
 import '../data/geolocation.dart';
@@ -58,7 +57,6 @@ class _CurrentDetailsState extends State<CurrentDetails> {
                 actions: [
                   PopupMenuButton(
                     onSelected: (value) {
-                      print('Value $value selected');
                       switch (value) {
                         case PopUpItem.changeLocation:
                           changeLocation(context);
@@ -112,7 +110,6 @@ class _CurrentDetailsState extends State<CurrentDetails> {
                     itemCount: weather.hourlyWeather.length,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (BuildContext context, int index) {
-                      print('Printing $index hourly weather');
                       return HourlyWeatherTile(weather.hourlyWeather[index]);
                     },
                   ),
@@ -162,10 +159,12 @@ class _CurrentDetailsState extends State<CurrentDetails> {
           return AddLocation(true, title: 'Change Location');
         });
 
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => CurrentDetails(changedLocation)));
+    if (changedLocation != null) {
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => CurrentDetails(changedLocation)));
+    }
   }
 
   void changeAPI(BuildContext context) async {
@@ -175,8 +174,10 @@ class _CurrentDetailsState extends State<CurrentDetails> {
           return AddLocation(true, title: 'Change API');
         });
 
-    Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (context) => CurrentDetails(location)));
+    if (changedAPI != null) {
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => CurrentDetails(location)));
+    }
   }
 }
 
