@@ -48,8 +48,12 @@ class DownloadWeather {
   static Future<List<GeoLocation>> downloadLocationCoords(
       String cityName) async {
     List<GeoLocation> geoLocations = <GeoLocation>[];
-    var response = await http.get(Constants.getCoordFromLocation(cityName,
-        api: await sembastDb.getApi()));
+    var response = await http
+        .get(Constants.getCoordFromLocation(cityName,
+            api: await sembastDb.getApi()))
+        .catchError((error) {
+      print('Downloading error: $error');
+    });
     var statusCode = response.statusCode;
     if (statusCode != 200) {
       print('$statusCode : Failure downloading weather.');

@@ -1,5 +1,4 @@
 class Constants {
-  // static final String apiKey = '0cd1d9bfbf9969a81fc5105bf1239b9d';
   static const String apiKey = '68d3784d0f6da71f53a458fc66562917';
 
   //Common phrases
@@ -18,11 +17,9 @@ class Constants {
   //Return required api calls
   static Uri oneCallApi(double lat, double lon,
       {String unit = 'metric', String? api}) {
-    print('(Constants) API stored: $api');
     if (api?.length == 0 || api == null) {
       api = apiKey;
     }
-    print('(Constants) API called : $api');
     var uri = Uri.parse(
         'https://api.openweathermap.org/data/2.5/onecall?lat=$lat&lon=$lon&exclude=minutely&appid=$api&units=$unit');
     return uri;

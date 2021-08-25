@@ -22,10 +22,17 @@ class LocationChooser extends StatefulWidget {
 class _LocationChooserState extends State<LocationChooser> {
   String weatherInfo = '';
   String city = '';
-
+  late Future<int> internet;
+  late Future<List<GeoLocation>> savedLocations;
   var _isProgressVisible = false;
-
   var _isDeviceLocationProgressVisible = false;
+
+  @override
+  void initState() {
+    internet = checkInternet();
+    savedLocations = getSavedLocation();
+    super.initState();
+  }
 
   Future<int> checkInternet() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
@@ -43,10 +50,6 @@ class _LocationChooserState extends State<LocationChooser> {
     String message = 'Starting...';
     TextStyle messageStyle = TextStyle(
         color: Colors.white, fontSize: 12, decoration: TextDecoration.none);
-
-    // print('Location chooser building');
-    Future<int> internet = checkInternet();
-    Future<List<GeoLocation>> savedLocations = getSavedLocation();
     final ButtonStyle buttonStyle =
         ElevatedButton.styleFrom(textStyle: TextStyle(fontSize: 24));
     InputDecoration locationInputDecoration = InputDecoration(
