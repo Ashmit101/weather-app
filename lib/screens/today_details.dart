@@ -25,12 +25,18 @@ class _CurrentDetailsState extends State<CurrentDetails> {
   GeoLocation location;
   late Map<String, dynamic> weatherMap;
   String load = 'loading';
+  late Future<WeatherForecast> weatherForecast;
 
   _CurrentDetailsState(this.location);
 
   @override
+  void initState() {
+    weatherForecast = downloadWeatherForecast(location);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    Future<WeatherForecast> weatherForecast = downloadWeatherForecast(location);
     TextStyle titleStyle = TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: 16,
@@ -110,7 +116,8 @@ class _CurrentDetailsState extends State<CurrentDetails> {
                     itemCount: weather.hourlyWeather.length,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (BuildContext context, int index) {
-                      return HourlyWeatherTile(weather.hourlyWeather[index]);
+                      return HourlyWeatherTile(
+                          weather.hourlyWeather[index], weather.timeshift);
                     },
                   ),
                 ),
@@ -119,7 +126,7 @@ class _CurrentDetailsState extends State<CurrentDetails> {
                   style: titleStyle,
                 ),
                 Column(
-                  children: getDailies(weather.dailyWeather),
+                  children: getDailies(weather.dailyWeather, weather.timeshift),
                 ),
               ]),
             );
@@ -144,10 +151,10 @@ class _CurrentDetailsState extends State<CurrentDetails> {
     return weather;
   }
 
-  getDailies(List<DailyWeather> dailyWeathers) {
+  getDailies(List<DailyWeather> dailyWeathers, int offset) {
     var dailyTiles = <DailyWeatherTile>[];
     dailyWeathers.forEach((dailyWeather) {
-      dailyTiles.add(DailyWeatherTile(dailyWeather));
+      dailyTiles.add(DailyWeatherTile(dailyWeather, offset));
     });
     return dailyTiles;
   }

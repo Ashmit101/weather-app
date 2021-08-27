@@ -247,9 +247,6 @@ class _LocationChooserState extends State<LocationChooser> {
         builder: (BuildContext context) {
           return ChooseCoord.fromGeoList(geoLocations);
         });
-    if (chosenLocation != null) {
-      int id = await sembastDb.addLocation(chosenLocation);
-    }
     gotoCurrentWeather(context, chosenLocation);
   }
 
