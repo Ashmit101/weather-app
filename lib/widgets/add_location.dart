@@ -73,7 +73,6 @@ class AddLocation extends StatelessWidget {
     //Save the location according to the context
     if (chosenLocation != null) {
       if (_changeLocation) {
-        var result = await sembastDb.addLocation(chosenLocation);
         Navigator.pop(context, chosenLocation);
       }
     }

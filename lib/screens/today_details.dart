@@ -25,12 +25,18 @@ class _CurrentDetailsState extends State<CurrentDetails> {
   GeoLocation location;
   late Map<String, dynamic> weatherMap;
   String load = 'loading';
+  late Future<WeatherForecast> weatherForecast;
 
   _CurrentDetailsState(this.location);
 
   @override
+  void initState() {
+    weatherForecast = downloadWeatherForecast(location);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    Future<WeatherForecast> weatherForecast = downloadWeatherForecast(location);
     TextStyle titleStyle = TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: 16,
@@ -80,25 +86,62 @@ class _CurrentDetailsState extends State<CurrentDetails> {
                 ],
               ),
               body: ListView(children: [
-                Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Image.network(
-                        Constants.getIcon(weather.currentWeather.weatherIcon!)
-                            .toString(),
-                        scale: 0.5,
-                      ),
-                      Text(weather.currentWeather.weatherMain!),
-                      Text(
-                          '${weather.currentWeather.temp}${units.getTempUnit()}'),
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.air),
-                            Text(weather.currentWeather.windSpeed.toString()),
-                            Text(weather.currentWeather.humidity.toString())
-                          ]),
-                    ]),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 16.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.network(
+                                Constants.getIcon(
+                                        weather.currentWeather.weatherIcon!)
+                                    .toString(),
+                                scale: 1.5,
+                              ),
+                              Text(
+                                weather.currentWeather.weatherMain!,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Text(
+                          '${weather.currentWeather.temp.round()}${units.getTempUnit()}',
+                          style: TextStyle(fontSize: 90),
+                        ),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.air),
+                                    Text(
+                                        '${weather.currentWeather.windSpeed}${units.getWindSpeedUnit()}'),
+                                  ],
+                                ),
+                              ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Image(
+                                    image: AssetImage('graphics/humidity.png'),
+                                  ),
+                                  Text(
+                                      '${weather.currentWeather.humidity}${units.getHumidityUnit()}'),
+                                ],
+                              )
+                            ]),
+                      ]),
+                ),
                 Text(
                   'Today',
                   style: titleStyle,
@@ -110,7 +153,8 @@ class _CurrentDetailsState extends State<CurrentDetails> {
                     itemCount: weather.hourlyWeather.length,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (BuildContext context, int index) {
-                      return HourlyWeatherTile(weather.hourlyWeather[index]);
+                      return HourlyWeatherTile(
+                          weather.hourlyWeather[index], weather.timeshift);
                     },
                   ),
                 ),
@@ -119,7 +163,7 @@ class _CurrentDetailsState extends State<CurrentDetails> {
                   style: titleStyle,
                 ),
                 Column(
-                  children: getDailies(weather.dailyWeather),
+                  children: getDailies(weather.dailyWeather, weather.timeshift),
                 ),
               ]),
             );
@@ -144,10 +188,10 @@ class _CurrentDetailsState extends State<CurrentDetails> {
     return weather;
   }
 
-  getDailies(List<DailyWeather> dailyWeathers) {
+  getDailies(List<DailyWeather> dailyWeathers, int offset) {
     var dailyTiles = <DailyWeatherTile>[];
     dailyWeathers.forEach((dailyWeather) {
-      dailyTiles.add(DailyWeatherTile(dailyWeather));
+      dailyTiles.add(DailyWeatherTile(dailyWeather, offset));
     });
     return dailyTiles;
   }

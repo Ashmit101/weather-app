@@ -64,8 +64,10 @@ class Constants {
   }
 
   //Get DateTime object from the Unix time from the weather
-  static DateTime getDateTimeFromUTC(String utcTime) {
-    return DateTime.fromMillisecondsSinceEpoch(int.parse(utcTime) * 1000,
-        isUtc: true);
+  static DateTime getDateTimeFromUTC(int utcTime, int offset) {
+    var dateTime =
+        DateTime.fromMillisecondsSinceEpoch(utcTime * 1000, isUtc: true);
+    dateTime = dateTime.add(Duration(seconds: offset));
+    return dateTime;
   }
 }

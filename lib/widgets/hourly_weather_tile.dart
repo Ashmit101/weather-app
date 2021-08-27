@@ -6,8 +6,10 @@ import '../data/units.dart';
 
 class HourlyWeatherTile extends StatelessWidget {
   final HourlyWeather hourlyWeather;
+  final int offset;
 
-  const HourlyWeatherTile(this.hourlyWeather, {Key? key}) : super(key: key);
+  const HourlyWeatherTile(this.hourlyWeather, this.offset, {Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,8 +21,8 @@ class HourlyWeatherTile extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              Text(Format.getHourMinute(
-                  Constants.getDateTimeFromUTC(hourlyWeather.time.toString()))),
+              Text(Format.getHourMinute(Constants.getDateTimeFromUTC(
+                  hourlyWeather.time as int, offset))),
               Image.network(
                 Constants.getIcon(hourlyWeather.weatherIcon!).toString(),
                 scale: 2,

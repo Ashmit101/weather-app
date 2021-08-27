@@ -242,15 +242,13 @@ class _LocationChooserState extends State<LocationChooser> {
       BuildContext context, List<GeoLocation> geoLocations) async {
     //Location chosen by the user
     var chosenLocation = await showDialog(
-        barrierDismissible: false,
         context: context,
         builder: (BuildContext context) {
           return ChooseCoord.fromGeoList(geoLocations);
         });
     if (chosenLocation != null) {
-      int id = await sembastDb.addLocation(chosenLocation);
+      gotoCurrentWeather(context, chosenLocation);
     }
-    gotoCurrentWeather(context, chosenLocation);
   }
 
   getDeviceLocation(BuildContext context) async {
@@ -290,10 +288,9 @@ class _LocationChooserState extends State<LocationChooser> {
         await DownloadWeather.downloadLocationNameFromCoord(
             currentPosition.latitude, currentPosition.longitude);
     var location = locations[0] as Map<String, dynamic>;
-    print('List has ${locations.length} items');
+
     List<GeoLocation> geoLocationList =
-        await DownloadWeather.downloadLocationCoords(
-            location['local_names']['en']);
+        await DownloadWeather.downloadLocationCoords(location['name']);
     showDialogWithLocations(context, geoLocationList);
     setState(() {
       _isDeviceLocationProgressVisible = false;

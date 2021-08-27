@@ -53,6 +53,9 @@ class DailyWeather extends Weather {
       var dailyWeather = DailyWeather.fromJsonMap(weatherMap);
       dailyList.add(dailyWeather);
     });
+    //print('DailyWeather are for ${dailyList.length} days');
+    //Remove today from the list
+    dailyList.removeAt(0);
     return dailyList;
   }
 }

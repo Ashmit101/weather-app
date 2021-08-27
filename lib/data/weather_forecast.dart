@@ -6,15 +6,13 @@ class WeatherForecast {
   Weather currentWeather;
   List<DailyWeather> dailyWeather;
   List<HourlyWeather> hourlyWeather;
-
-  void showMain() {
-    print('Current weather is : ${currentWeather.weatherMain}');
-  }
+  int timeshift;
 
   WeatherForecast(Map<String, dynamic> weatherMap)
       : currentWeather = Weather.fromJsonMap(
           weatherMap['current'],
         ),
         hourlyWeather = HourlyWeather.getHourlyList(weatherMap['hourly']),
-        dailyWeather = DailyWeather.getDailyList(weatherMap['daily']);
+        dailyWeather = DailyWeather.getDailyList(weatherMap['daily']),
+        timeshift = weatherMap['timezone_offset'];
 }
