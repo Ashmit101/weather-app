@@ -71,7 +71,8 @@ class AddLocation extends StatelessWidget {
           return ChooseCoord.fromGeoList(geoLocations);
         });
     //Save the location according to the context
-    if (chosenLocation != null) {
+    int id = await sembastDb.addLocation(chosenLocation);
+    if (chosenLocation != null && id >= 0) {
       if (_changeLocation) {
         Navigator.pop(context, chosenLocation);
       }
