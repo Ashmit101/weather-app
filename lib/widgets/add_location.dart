@@ -3,6 +3,7 @@ import 'package:weather/tools/sembast_db.dart';
 import '../tools/weather_downloader.dart';
 import '../data/geolocation.dart';
 import 'choose_coord.dart';
+import './api_field.dart';
 
 SembastDb sembastDb = SembastDb();
 
@@ -41,6 +42,7 @@ class AddLocation extends StatelessWidget {
               controller: textController,
               decoration: inputDecoration,
             ),
+            Visibility(visible: !_changeLocation, child: APIField()),
             ElevatedButton(
               onPressed: () {
                 if (_title == 'Change Location') {
