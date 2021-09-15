@@ -6,7 +6,9 @@ import 'package:weather/tools/weather_downloader.dart';
 import 'package:weather/widgets/choose_coord.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'api_instructions.dart';
 import '../tools/sembast_db.dart';
+import '../widgets/api_field.dart';
 
 TextEditingController locationTextController = TextEditingController();
 TextEditingController apiTextController = TextEditingController();
@@ -47,6 +49,7 @@ class _LocationChooserState extends State<LocationChooser> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
     String message = 'Starting...';
     TextStyle messageStyle = TextStyle(
         color: Colors.white, fontSize: 12, decoration: TextDecoration.none);
@@ -118,6 +121,7 @@ class _LocationChooserState extends State<LocationChooser> {
                                         decoration: apiInputDecoration,
                                         controller: apiTextController,
                                       ),
+                                      APIField(),
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
@@ -307,5 +311,12 @@ class _LocationChooserState extends State<LocationChooser> {
   void submit(BuildContext context, String? apiKey, String cityName) async {
     await sembastDb.addApiKey(apiKey);
     getLocationCoordinate(context, cityName);
+  }
+
+  void gotoApiInstruction() {
+    SchedulerBinding.instance?.addPostFrameCallback((timeStamp) {
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => ApiKeyInstruction()));
+    });
   }
 }

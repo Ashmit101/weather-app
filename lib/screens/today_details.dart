@@ -215,7 +215,7 @@ class _CurrentDetailsState extends State<CurrentDetails> {
     var changedAPI = await showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AddLocation(true, title: 'Change API');
+          return AddLocation(false, title: 'Change API');
         });
 
     if (changedAPI != null) {
