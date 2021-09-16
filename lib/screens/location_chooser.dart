@@ -49,7 +49,6 @@ class _LocationChooserState extends State<LocationChooser> {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
     String message = 'Starting...';
     TextStyle messageStyle = TextStyle(
         color: Colors.white, fontSize: 12, decoration: TextDecoration.none);
@@ -91,6 +90,8 @@ class _LocationChooserState extends State<LocationChooser> {
                       //After resolving the future
                       if (snapshot.hasData) {
                         var savedLocation = snapshot.data as List<GeoLocation>;
+                        print(
+                            'Number of saved locations: ${savedLocation.length}');
                         if (savedLocation.isEmpty) {
                           return Scaffold(
                               appBar: AppBar(
@@ -251,6 +252,7 @@ class _LocationChooserState extends State<LocationChooser> {
           return ChooseCoord.fromGeoList(geoLocations);
         });
     if (chosenLocation != null) {
+      sembastDb.addLocation(chosenLocation);
       gotoCurrentWeather(context, chosenLocation);
     }
   }
