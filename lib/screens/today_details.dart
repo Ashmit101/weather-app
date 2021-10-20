@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:weather/data/daily_weather.dart';
 import 'package:weather/data/weather_forecast.dart';
+import 'package:weather/screens/settings.dart';
 import 'package:weather/tools/weather_downloader.dart';
 import 'package:weather/widgets/daily_weather_tile.dart';
 import '../data/geolocation.dart';
@@ -70,6 +71,9 @@ class _CurrentDetailsState extends State<CurrentDetails> {
                         case PopUpItem.changeApi:
                           changeAPI(context);
                           break;
+                        case PopUpItem.settings:
+                          gotoSettings(context);
+                          break;
                       }
                     },
                     itemBuilder: (context) => [
@@ -80,7 +84,9 @@ class _CurrentDetailsState extends State<CurrentDetails> {
                       PopupMenuItem(
                         value: PopUpItem.changeApi,
                         child: Text('Change API'),
-                      )
+                      ),
+                      PopupMenuItem(
+                          value: PopUpItem.settings, child: Text('Settings')),
                     ],
                   ),
                 ],
@@ -223,6 +229,11 @@ class _CurrentDetailsState extends State<CurrentDetails> {
           MaterialPageRoute(builder: (context) => CurrentDetails(location)));
     }
   }
+
+  void gotoSettings(BuildContext context) {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => Settings()));
+  }
 }
 
 // goToLocations(BuildContext context) {
@@ -230,4 +241,4 @@ class _CurrentDetailsState extends State<CurrentDetails> {
 //   Navigator.push(context, MaterialPageRoute(builder: (context) => Locations()));
 // }
 
-enum PopUpItem { changeLocation, changeApi }
+enum PopUpItem { changeLocation, changeApi, settings }
