@@ -7,6 +7,7 @@ class WeatherForecast {
   List<DailyWeather> dailyWeather;
   List<HourlyWeather> hourlyWeather;
   int timeshift;
+  int unitId;
 
   WeatherForecast(Map<String, dynamic> weatherMap)
       : currentWeather = Weather.fromJsonMap(
@@ -14,5 +15,6 @@ class WeatherForecast {
         ),
         hourlyWeather = HourlyWeather.getHourlyList(weatherMap['hourly']),
         dailyWeather = DailyWeather.getDailyList(weatherMap['daily']),
-        timeshift = weatherMap['timezone_offset'];
+        timeshift = weatherMap['timezone_offset'],
+        unitId = weatherMap['unit'];
 }

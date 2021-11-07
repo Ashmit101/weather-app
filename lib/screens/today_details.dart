@@ -9,6 +9,7 @@ import '../data/data.dart';
 import '../widgets/hourly_weather_tile.dart';
 import '../data/units.dart';
 import '../widgets/add_location.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 //Constants, objects used all over
 Units units = Units();
@@ -27,17 +28,20 @@ class _CurrentDetailsState extends State<CurrentDetails> {
   late Map<String, dynamic> weatherMap;
   String load = 'loading';
   late Future<WeatherForecast> weatherForecast;
+  late Future<int> preferredUnit;
 
   _CurrentDetailsState(this.location);
 
   @override
   void initState() {
     weatherForecast = downloadWeatherForecast(location);
+    preferredUnit = getPreferredUnit();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    print('Built TodayDetails');
     TextStyle titleStyle = TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: 16,
@@ -118,7 +122,7 @@ class _CurrentDetailsState extends State<CurrentDetails> {
                           ),
                         ),
                         Text(
-                          '${weather.currentWeather.temp.round()}${units.getTempUnit()}',
+                          '${weather.currentWeather.temp.round()}${units.getTempUnit(weather.unitId)}',
                           style: TextStyle(fontSize: 90),
                         ),
                         Row(
@@ -159,8 +163,8 @@ class _CurrentDetailsState extends State<CurrentDetails> {
                     itemCount: weather.hourlyWeather.length,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (BuildContext context, int index) {
-                      return HourlyWeatherTile(
-                          weather.hourlyWeather[index], weather.timeshift);
+                      return HourlyWeatherTile(weather.hourlyWeather[index],
+                          weather.timeshift, weather.unitId);
                     },
                   ),
                 ),
@@ -169,7 +173,8 @@ class _CurrentDetailsState extends State<CurrentDetails> {
                   style: titleStyle,
                 ),
                 Column(
-                  children: getDailies(weather.dailyWeather, weather.timeshift),
+                  children: getDailies(
+                      weather.dailyWeather, weather.timeshift, weather.unitId),
                 ),
               ]),
             );
@@ -194,10 +199,10 @@ class _CurrentDetailsState extends State<CurrentDetails> {
     return weather;
   }
 
-  getDailies(List<DailyWeather> dailyWeathers, int offset) {
+  getDailies(List<DailyWeather> dailyWeathers, int offset, int unitId) {
     var dailyTiles = <DailyWeatherTile>[];
     dailyWeathers.forEach((dailyWeather) {
-      dailyTiles.add(DailyWeatherTile(dailyWeather, offset));
+      dailyTiles.add(DailyWeatherTile(dailyWeather, offset, unitId));
     });
     return dailyTiles;
   }
@@ -230,9 +235,18 @@ class _CurrentDetailsState extends State<CurrentDetails> {
     }
   }
 
-  void gotoSettings(BuildContext context) {
-    Navigator.push(
+  void gotoSettings(BuildContext context) async {
+    bool changedPrefs = await Navigator.push(
         context, MaterialPageRoute(builder: (context) => Settings()));
+    if (changedPrefs) {
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => CurrentDetails(location)));
+    }
+  }
+
+  Future<int> getPreferredUnit() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('unit') ?? 0;
   }
 }
 
