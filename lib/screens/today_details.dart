@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:weather/data/daily_weather.dart';
 import 'package:weather/data/weather_forecast.dart';
+import 'package:weather/screens/settings.dart';
 import 'package:weather/tools/weather_downloader.dart';
 import 'package:weather/widgets/daily_weather_tile.dart';
 import '../data/geolocation.dart';
@@ -8,6 +9,7 @@ import '../data/data.dart';
 import '../widgets/hourly_weather_tile.dart';
 import '../data/units.dart';
 import '../widgets/add_location.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 //Constants, objects used all over
 Units units = Units();
@@ -26,17 +28,20 @@ class _CurrentDetailsState extends State<CurrentDetails> {
   late Map<String, dynamic> weatherMap;
   String load = 'loading';
   late Future<WeatherForecast> weatherForecast;
+  late Future<int> preferredUnit;
 
   _CurrentDetailsState(this.location);
 
   @override
   void initState() {
     weatherForecast = downloadWeatherForecast(location);
+    preferredUnit = getPreferredUnit();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    print('Built TodayDetails');
     TextStyle titleStyle = TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: 16,
@@ -70,6 +75,9 @@ class _CurrentDetailsState extends State<CurrentDetails> {
                         case PopUpItem.changeApi:
                           changeAPI(context);
                           break;
+                        case PopUpItem.settings:
+                          gotoSettings(context);
+                          break;
                       }
                     },
                     itemBuilder: (context) => [
@@ -80,7 +88,9 @@ class _CurrentDetailsState extends State<CurrentDetails> {
                       PopupMenuItem(
                         value: PopUpItem.changeApi,
                         child: Text('Change API'),
-                      )
+                      ),
+                      PopupMenuItem(
+                          value: PopUpItem.settings, child: Text('Settings')),
                     ],
                   ),
                 ],
@@ -112,7 +122,7 @@ class _CurrentDetailsState extends State<CurrentDetails> {
                           ),
                         ),
                         Text(
-                          '${weather.currentWeather.temp.round()}${units.getTempUnit()}',
+                          '${weather.currentWeather.temp.round()}${units.getTempUnit(weather.unitId)}',
                           style: TextStyle(fontSize: 90),
                         ),
                         Row(
@@ -125,7 +135,7 @@ class _CurrentDetailsState extends State<CurrentDetails> {
                                   children: [
                                     Icon(Icons.air),
                                     Text(
-                                        '${weather.currentWeather.windSpeed}${units.getWindSpeedUnit()}'),
+                                        '${weather.currentWeather.windSpeed}${units.getWindSpeedUnit(weather.unitId)}'),
                                   ],
                                 ),
                               ),
@@ -153,8 +163,8 @@ class _CurrentDetailsState extends State<CurrentDetails> {
                     itemCount: weather.hourlyWeather.length,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (BuildContext context, int index) {
-                      return HourlyWeatherTile(
-                          weather.hourlyWeather[index], weather.timeshift);
+                      return HourlyWeatherTile(weather.hourlyWeather[index],
+                          weather.timeshift, weather.unitId);
                     },
                   ),
                 ),
@@ -163,7 +173,8 @@ class _CurrentDetailsState extends State<CurrentDetails> {
                   style: titleStyle,
                 ),
                 Column(
-                  children: getDailies(weather.dailyWeather, weather.timeshift),
+                  children: getDailies(
+                      weather.dailyWeather, weather.timeshift, weather.unitId),
                 ),
               ]),
             );
@@ -188,10 +199,10 @@ class _CurrentDetailsState extends State<CurrentDetails> {
     return weather;
   }
 
-  getDailies(List<DailyWeather> dailyWeathers, int offset) {
+  getDailies(List<DailyWeather> dailyWeathers, int offset, int unitId) {
     var dailyTiles = <DailyWeatherTile>[];
     dailyWeathers.forEach((dailyWeather) {
-      dailyTiles.add(DailyWeatherTile(dailyWeather, offset));
+      dailyTiles.add(DailyWeatherTile(dailyWeather, offset, unitId));
     });
     return dailyTiles;
   }
@@ -223,6 +234,20 @@ class _CurrentDetailsState extends State<CurrentDetails> {
           MaterialPageRoute(builder: (context) => CurrentDetails(location)));
     }
   }
+
+  void gotoSettings(BuildContext context) async {
+    bool changedPrefs = await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => Settings()));
+    if (changedPrefs) {
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => CurrentDetails(location)));
+    }
+  }
+
+  Future<int> getPreferredUnit() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('unit') ?? 0;
+  }
 }
 
 // goToLocations(BuildContext context) {
@@ -230,4 +255,4 @@ class _CurrentDetailsState extends State<CurrentDetails> {
 //   Navigator.push(context, MaterialPageRoute(builder: (context) => Locations()));
 // }
 
-enum PopUpItem { changeLocation, changeApi }
+enum PopUpItem { changeLocation, changeApi, settings }

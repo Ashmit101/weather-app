@@ -7,7 +7,9 @@ import '../data/units.dart';
 class DailyWeatherTile extends StatelessWidget {
   final DailyWeather dailyWeather;
   final int offset;
-  const DailyWeatherTile(this.dailyWeather, this.offset, {Key? key})
+  final int unitId;
+  const DailyWeatherTile(this.dailyWeather, this.offset, this.unitId,
+      {Key? key})
       : super(key: key);
 
   @override
@@ -21,7 +23,7 @@ class DailyWeatherTile extends StatelessWidget {
               Constants.getDateTimeFromUTC(dailyWeather.time as int, offset))),
           Image.network(
               Constants.getIcon(dailyWeather.weatherIcon!).toString()),
-          Text('${dailyWeather.temp['day']}${units.getTempUnit()}')
+          Text('${dailyWeather.temp['day']}${units.getTempUnit(unitId)}')
         ],
       ),
     );

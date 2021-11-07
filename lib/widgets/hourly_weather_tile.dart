@@ -7,8 +7,10 @@ import '../data/units.dart';
 class HourlyWeatherTile extends StatelessWidget {
   final HourlyWeather hourlyWeather;
   final int offset;
+  final int unitId;
 
-  const HourlyWeatherTile(this.hourlyWeather, this.offset, {Key? key})
+  const HourlyWeatherTile(this.hourlyWeather, this.offset, this.unitId,
+      {Key? key})
       : super(key: key);
 
   @override
@@ -27,7 +29,7 @@ class HourlyWeatherTile extends StatelessWidget {
                 Constants.getIcon(hourlyWeather.weatherIcon!).toString(),
                 scale: 2,
               ),
-              Text('${hourlyWeather.temp}${units.getTempUnit()}')
+              Text('${hourlyWeather.temp}${units.getTempUnit(unitId)}')
             ],
           ),
         ),

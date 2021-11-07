@@ -70,4 +70,16 @@ class Constants {
     dateTime = dateTime.add(Duration(seconds: offset));
     return dateTime;
   }
+
+  //Get string of unit from the unitId
+  static String getUnitString(int unitId) {
+    switch (unitId) {
+      case 1:
+        return standard;
+      case 2:
+        return imperial;
+      default:
+        return metric;
+    }
+  }
 }

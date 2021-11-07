@@ -1,3 +1,4 @@
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:weather/data/geolocation.dart';
 import 'package:weather/tools/sembast_db.dart';
 
@@ -29,10 +30,18 @@ class DownloadWeather {
 
   static Future<Map<String, dynamic>> downloadWeatherJson(
       GeoLocation location) async {
+    //SharedPreference instance
+    SharedPreferences _sharedPreferences =
+        await SharedPreferences.getInstance();
+
+    //unit
+    int unitId = _sharedPreferences.getInt('unit') ?? 0;
+    String unitString = Constants.getUnitString(unitId);
+
     //Get http response
     var response = await http.get(Constants.oneCallApi(
         location.lat, location.lon,
-        api: await sembastDb.getApi()));
+        api: await sembastDb.getApi(), unit: unitString));
     var statusCode = response.statusCode;
 
     if (statusCode == 200) {
@@ -42,6 +51,7 @@ class DownloadWeather {
     }
     Map<String, dynamic> weatherMap = jsonDecode(response.body);
     weatherMap['current']['location'] = location.name;
+    weatherMap['unit'] = unitId;
     return weatherMap;
   }
 
