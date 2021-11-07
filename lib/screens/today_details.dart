@@ -135,7 +135,7 @@ class _CurrentDetailsState extends State<CurrentDetails> {
                                   children: [
                                     Icon(Icons.air),
                                     Text(
-                                        '${weather.currentWeather.windSpeed}${units.getWindSpeedUnit()}'),
+                                        '${weather.currentWeather.windSpeed}${units.getWindSpeedUnit(weather.unitId)}'),
                                   ],
                                 ),
                               ),

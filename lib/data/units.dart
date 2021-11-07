@@ -10,8 +10,12 @@ class Units {
     }
   }
 
-  String getWindSpeedUnit() {
-    return " m/s";
+  String getWindSpeedUnit(int unitId) {
+    if (unitId == 2) {
+      return " mph";
+    } else {
+      return " m/s";
+    }
   }
 
   String getHumidityUnit() {
