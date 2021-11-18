@@ -19,11 +19,26 @@ class DailyWeatherTile extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Text(Format.getWeekDay(
-              Constants.getDateTimeFromUTC(dailyWeather.time as int, offset))),
-          Image.network(
-              Constants.getIcon(dailyWeather.weatherIcon!).toString()),
-          Text('${dailyWeather.temp['day']}${units.getTempUnit(unitId)}')
+          Expanded(
+            flex: 3,
+            child: Text(
+              Format.getWeekDay(Constants.getDateTimeFromUTC(
+                  dailyWeather.time as int, offset)),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Expanded(
+            flex: 2,
+            child: Image.network(
+                Constants.getIcon(dailyWeather.weatherIcon!).toString()),
+          ),
+          Expanded(
+            flex: 3,
+            child: Text(
+              '${dailyWeather.temp['day']}${units.getTempUnit(unitId)}',
+              textAlign: TextAlign.center,
+            ),
+          )
         ],
       ),
     );
