@@ -16,7 +16,7 @@ var errorInputDecoration = InputDecoration(
     labelText: 'API',
     hintText: 'Enter your API key of OpenWeatherMap');
 
-var decoration;
+var decoration = inputDecoration;
 
 TextEditingController textController = TextEditingController();
 
