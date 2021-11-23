@@ -10,6 +10,7 @@ import '../widgets/hourly_weather_tile.dart';
 import '../data/units.dart';
 import '../widgets/add_location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../widgets/change_api.dart';
 
 //Constants, objects used all over
 Units units = Units();
@@ -226,7 +227,7 @@ class _CurrentDetailsState extends State<CurrentDetails> {
     var changedAPI = await showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AddLocation(false, title: 'Change API');
+          return ChangeAPI();
         });
 
     if (changedAPI != null) {
