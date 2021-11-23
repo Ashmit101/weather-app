@@ -48,6 +48,17 @@ class DownloadWeather {
       print('$statusCode : Weather data successfully downloaded');
     } else {
       print('$statusCode : Failure downloading weather data');
+      print(statusCode);
+      if (statusCode == 401) {
+        print('Wrong API key');
+        int id = await sembastDb.addApiKey(Constants.apiKey);
+        if (id >= 0) {
+          response = await http.get(Constants.oneCallApi(
+              location.lat, location.lon,
+              api: await sembastDb.getApi(), unit: unitString));
+          statusCode = response.statusCode;
+        }
+      }
     }
     Map<String, dynamic> weatherMap = jsonDecode(response.body);
     weatherMap['current']['location'] = location.name;
@@ -55,8 +66,8 @@ class DownloadWeather {
     return weatherMap;
   }
 
-  static Future<List<GeoLocation>> downloadLocationCoords(
-      String cityName) async {
+  static Future<dynamic> downloadLocationCoords(String cityName) async {
+    print("DownloadWeather: downloadLocationCoords");
     List<GeoLocation> geoLocations = <GeoLocation>[];
     var response = await http
         .get(Constants.getCoordFromLocation(cityName,
@@ -67,6 +78,10 @@ class DownloadWeather {
     var statusCode = response.statusCode;
     if (statusCode != 200) {
       print('$statusCode : Failure downloading weather.');
+      if (statusCode == 401) {
+        print('DownloadWeather: API might be wrong');
+        return 401;
+      }
     } else {
       print('$statusCode : Weather downloaded successfully.');
       List<dynamic> locationList = jsonDecode(response.body);
@@ -88,5 +103,16 @@ class DownloadWeather {
     print(response.body);
     List<dynamic> responseList = jsonDecode(response.body);
     return responseList;
+  }
+
+  static Future<bool> checkAPI(String apiKey) async {
+    var response =
+        await http.get(Constants.getCoordFromLocation('New York', api: apiKey));
+    var statusCode = response.statusCode;
+    if (statusCode == 401) {
+      return false;
+    } else {
+      return true;
+    }
   }
 }

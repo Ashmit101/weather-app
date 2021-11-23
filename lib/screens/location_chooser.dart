@@ -13,6 +13,19 @@ import '../widgets/api_field.dart';
 TextEditingController locationTextController = TextEditingController();
 TextEditingController apiTextController = TextEditingController();
 SembastDb sembastDb = SembastDb();
+InputDecoration apiDecoration = InputDecoration(
+  isDense: true,
+  border: OutlineInputBorder(),
+  hintText: 'Your API key (Optional)',
+);
+InputDecoration apiDecorationError = InputDecoration(
+  isDense: true,
+  border: OutlineInputBorder(),
+  hintText: 'Your API key (Optional)',
+  errorText: 'Error API',
+);
+
+var apiInputDecoration = apiDecoration;
 
 class LocationChooser extends StatefulWidget {
   @override
@@ -58,11 +71,6 @@ class _LocationChooserState extends State<LocationChooser> {
       isDense: true,
       border: OutlineInputBorder(),
       hintText: 'City Name',
-    );
-    InputDecoration apiInputDecoration = InputDecoration(
-      isDense: true,
-      border: OutlineInputBorder(),
-      hintText: 'Your API key (Optional)',
     );
 
     return FutureBuilder(
@@ -119,6 +127,7 @@ class _LocationChooserState extends State<LocationChooser> {
                                       ),
                                       //API textfield
                                       TextField(
+                                        maxLength: 32,
                                         decoration: apiInputDecoration,
                                         controller: apiTextController,
                                       ),
@@ -235,9 +244,16 @@ class _LocationChooserState extends State<LocationChooser> {
   }
 
   void getLocationCoordinate(BuildContext context, String cityName) async {
-    List<GeoLocation> geoLocationList =
+    var geoLocationList =
         await DownloadWeather.downloadLocationCoords(cityName);
-    showDialogWithLocations(context, geoLocationList);
+    if (geoLocationList.runtimeType == int) {
+      print('returned int $geoLocationList');
+      setState(() {
+        apiInputDecoration = apiDecorationError;
+      });
+    } else {
+      showDialogWithLocations(context, geoLocationList);
+    }
     setState(() {
       _isProgressVisible = false;
     });

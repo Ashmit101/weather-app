@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'screens/location_chooser.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'tools/sembast_db.dart';
-import 'screens/api_instructions.dart';
 
 SembastDb sembastDb = SembastDb();
 
