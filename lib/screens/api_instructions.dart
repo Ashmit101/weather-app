@@ -32,8 +32,9 @@ class ApiKeyInstruction extends StatelessWidget {
 
 void _launchURL(String? href) async {
   if (href != null) {
-    if (await canLaunch(href)) {
-      await launch(href);
+    Uri link = Uri.parse(href);
+    if (await canLaunchUrl(link)) {
+      await launchUrl(link);
     } else {
       print('Could not launch link');
     }

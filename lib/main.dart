@@ -16,7 +16,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Weather',
       theme: ThemeData(
+        brightness: Brightness.light,
         primarySwatch: Colors.blue,
+      ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
       ),
       home: LocationChooser(),
     );
