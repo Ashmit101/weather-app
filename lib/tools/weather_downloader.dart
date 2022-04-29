@@ -1,15 +1,20 @@
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:weather/data/geolocation.dart';
+import 'package:weather/tools/sembast_db.dart';
 
 import '../data/data.dart';
 import 'package:http/http.dart' as http;
 
 import 'dart:convert';
 
+SembastDb sembastDb = SembastDb();
+
 class DownloadWeather {
   static Future<Map<String, dynamic>> downloadCurrentWeatherMap(
       GeoLocation location) async {
     //Get http response
-    var response = await http.get(Constants.getCurrentWeather(location.name));
+    var response = await http.get(Constants.getCurrentWeather(location.name,
+        api: await sembastDb.getApi()));
     var statusCode = response.statusCode;
 
     if (statusCode == 200) {
@@ -25,29 +30,58 @@ class DownloadWeather {
 
   static Future<Map<String, dynamic>> downloadWeatherJson(
       GeoLocation location) async {
+    //SharedPreference instance
+    SharedPreferences _sharedPreferences =
+        await SharedPreferences.getInstance();
+
+    //unit
+    int unitId = _sharedPreferences.getInt('unit') ?? 0;
+    String unitString = Constants.getUnitString(unitId);
+
     //Get http response
-    var response =
-        await http.get(Constants.oneCallApi(location.lat, location.lon));
+    var response = await http.get(Constants.oneCallApi(
+        location.lat, location.lon,
+        api: await sembastDb.getApi(), unit: unitString));
     var statusCode = response.statusCode;
 
     if (statusCode == 200) {
       print('$statusCode : Weather data successfully downloaded');
     } else {
       print('$statusCode : Failure downloading weather data');
+      print(statusCode);
+      if (statusCode == 401) {
+        print('Wrong API key');
+        int id = await sembastDb.addApiKey(Constants.apiKey);
+        if (id >= 0) {
+          response = await http.get(Constants.oneCallApi(
+              location.lat, location.lon,
+              api: await sembastDb.getApi(), unit: unitString));
+          statusCode = response.statusCode;
+        }
+      }
     }
     Map<String, dynamic> weatherMap = jsonDecode(response.body);
     weatherMap['current']['location'] = location.name;
+    weatherMap['unit'] = unitId;
     return weatherMap;
   }
 
-  static Future<List<GeoLocation>> downloadLocationCoords(
-      String cityName) async {
+  static Future<dynamic> downloadLocationCoords(String cityName) async {
+    print("DownloadWeather: downloadLocationCoords");
     List<GeoLocation> geoLocations = <GeoLocation>[];
-    List<Map<String, dynamic>> geoLocationsMap = [];
-    var response = await http.get(Constants.getCoordFromLocation(cityName));
+    var response = await http
+        .get(Constants.getCoordFromLocation(cityName,
+            api: await sembastDb.getApi()))
+        .catchError((error) {
+      print('Downloading error: $error');
+    });
     var statusCode = response.statusCode;
     if (statusCode != 200) {
       print('$statusCode : Failure downloading weather.');
+      if (statusCode == 401) {
+        print('DownloadWeather: API might be wrong');
+        return 401;
+      }
     } else {
       print('$statusCode : Weather downloaded successfully.');
       List<dynamic> locationList = jsonDecode(response.body);
@@ -64,16 +98,21 @@ class DownloadWeather {
     return geoLocations;
   }
 
-  // static Future<Weather> downlaodWeatherWithName(String cityName) async {
-  //   http.Response response = await downloadWeatherJsonWithName(cityName);
-  //   Map<String, dynamic> weatherMap = jsonDecode(response.body);
-  //   return Weather.fromJsonMap(weatherMap);
-  // }
-
   static Future downloadLocationNameFromCoord(double lat, double lon) async {
     var response = await http.get(Constants.getLocationFromCoord(lat, lon));
     print(response.body);
     List<dynamic> responseList = jsonDecode(response.body);
     return responseList;
+  }
+
+  static Future<bool> checkAPI(String apiKey) async {
+    var response =
+        await http.get(Constants.getCoordFromLocation('New York', api: apiKey));
+    var statusCode = response.statusCode;
+    if (statusCode == 401) {
+      return false;
+    } else {
+      return true;
+    }
   }
 }

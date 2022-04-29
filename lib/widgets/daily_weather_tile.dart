@@ -6,7 +6,11 @@ import '../data/units.dart';
 
 class DailyWeatherTile extends StatelessWidget {
   final DailyWeather dailyWeather;
-  const DailyWeatherTile(this.dailyWeather, {Key? key}) : super(key: key);
+  final int offset;
+  final int unitId;
+  const DailyWeatherTile(this.dailyWeather, this.offset, this.unitId,
+      {Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,11 +19,26 @@ class DailyWeatherTile extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Text(Format.getWeekDay(
-              Constants.getDateTimeFromUTC(dailyWeather.time.toString()))),
-          Image.network(
-              Constants.getIcon(dailyWeather.weatherIcon!).toString()),
-          Text('${dailyWeather.temp['day']}${units.getTempUnit()}')
+          Expanded(
+            flex: 3,
+            child: Text(
+              Format.getWeekDay(Constants.getDateTimeFromUTC(
+                  dailyWeather.time as int, offset)),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Expanded(
+            flex: 2,
+            child: Image.network(
+                Constants.getIcon(dailyWeather.weatherIcon!).toString()),
+          ),
+          Expanded(
+            flex: 3,
+            child: Text(
+              '${dailyWeather.temp['day']}${units.getTempUnit(unitId)}',
+              textAlign: TextAlign.center,
+            ),
+          )
         ],
       ),
     );

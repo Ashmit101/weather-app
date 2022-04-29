@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:geolocator/geolocator.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 import 'package:sembast/sembast.dart';
@@ -12,10 +11,13 @@ class SembastDb {
 
   final locationStore = intMapStoreFactory.store('location');
   final sideLocationStore = intMapStoreFactory.store('side_location');
+  final apiStore = intMapStoreFactory.store('api');
 
   static SembastDb _singleton = SembastDb._internal();
 
-  SembastDb._internal();
+  SembastDb._internal() {
+    getApi();
+  }
 
   factory SembastDb() {
     return _singleton;
@@ -75,5 +77,29 @@ class SembastDb {
       location.id = item.key;
       return location;
     }).toList();
+  }
+
+  Future<int> addApiKey(String? apiKey) async {
+    await init();
+    await apiStore.delete(_db!);
+    int id = await apiStore.add(_db!, {'api': apiKey});
+    return id;
+  }
+
+  Future getApi() async {
+    await init();
+    final snapshot = await apiStore.find(_db!);
+    var apiList = snapshot.map((item) {
+      print(item);
+      return item.value['api'];
+    }).toList();
+    print('Number of apis stored : ${apiList.length}');
+    if (apiList.length == 0) {
+      //No API stored yet
+
+      return null;
+    } else {
+      return apiList[0];
+    }
   }
 }

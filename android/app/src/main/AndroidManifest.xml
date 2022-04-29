@@ -1,9 +1,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.weather">
+    <queries>
+      <intent>
+        <action android:name="android.intent.action.VIEW" />
+        <data android:scheme="https" />
+      </intent>
+    </queries>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name='android.permission.INTERNET'/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
    <application
-        android:label="weather"
-        android:icon="@mipmap/ic_launcher">
+        android:label="Weather"
+        android:icon="@mipmap/weather_icon">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
