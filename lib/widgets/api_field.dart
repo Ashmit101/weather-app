@@ -2,8 +2,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/material.dart';
 import '../screens/api_instructions.dart';
 
-class APIField extends StatelessWidget {
-  const APIField({Key? key}) : super(key: key);
+class APIInstruction extends StatelessWidget {
+  const APIInstruction({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

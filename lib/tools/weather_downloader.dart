@@ -18,9 +18,11 @@ class DownloadWeather {
     var statusCode = response.statusCode;
 
     if (statusCode == 200) {
-      print('$statusCode : Weather data successfully downloaded');
+      print(
+          '[weather_downloader.dart] $statusCode : Weather data successfully downloaded');
     } else {
-      print('$statusCode : Failure downloading weather data');
+      print(
+          '[weather_downloader.dart] $statusCode : Failure downloading weather data');
     }
 
     Map<String, dynamic> weatherMap = jsonDecode(response.body);
@@ -45,12 +47,14 @@ class DownloadWeather {
     var statusCode = response.statusCode;
 
     if (statusCode == 200) {
-      print('$statusCode : Weather data successfully downloaded');
+      print(
+          '[weather_downloader.dart] $statusCode : Weather data successfully downloaded');
     } else {
-      print('$statusCode : Failure downloading weather data');
-      print(statusCode);
+      print(
+          '[weather_downloader.dart] $statusCode : Failure downloading weather data');
+      print('[weather_downloader.dart] $statusCode');
       if (statusCode == 401) {
-        print('Wrong API key');
+        print('[weather_downloader.dart] Wrong API key');
         int id = await sembastDb.addApiKey(Constants.apiKey);
         if (id >= 0) {
           response = await http.get(Constants.oneCallApi(
@@ -67,31 +71,35 @@ class DownloadWeather {
   }
 
   static Future<dynamic> downloadLocationCoords(String cityName) async {
-    print("DownloadWeather: downloadLocationCoords");
+    print("[weather_downloader.dart] DownloadWeather: downloadLocationCoords");
     List<GeoLocation> geoLocations = <GeoLocation>[];
     var response = await http
         .get(Constants.getCoordFromLocation(cityName,
             api: await sembastDb.getApi()))
         .catchError((error) {
-      print('Downloading error: $error');
+      print('[weather_downloader.dart] Downloading error: $error');
     });
     var statusCode = response.statusCode;
     if (statusCode != 200) {
-      print('$statusCode : Failure downloading weather.');
+      print(
+          '[weather_downloader.dart] $statusCode : Failure downloading weather.');
       if (statusCode == 401) {
-        print('DownloadWeather: API might be wrong');
+        print('[weather_downloader.dart] DownloadWeather: API might be wrong');
         return 401;
       }
     } else {
-      print('$statusCode : Weather downloaded successfully.');
+      print(
+          '[weather_downloader.dart] $statusCode : Weather downloaded successfully.');
       List<dynamic> locationList = jsonDecode(response.body);
       locationList.forEach((geoLocationMap) {
         geoLocations.add(GeoLocation.fromJsonMap(geoLocationMap));
       });
-      print('Number of locations: ${locationList.length}');
+      print(
+          '[weather_downloader.dart] Number of locations: ${locationList.length}');
       if (geoLocations.length == locationList.length) {
         geoLocations.forEach((element) {
-          print('${element.name}, ${element.country}');
+          print(
+              '[weather_downloader.dart] ${element.name}, ${element.country}');
         });
       }
     }
@@ -100,7 +108,7 @@ class DownloadWeather {
 
   static Future downloadLocationNameFromCoord(double lat, double lon) async {
     var response = await http.get(Constants.getLocationFromCoord(lat, lon));
-    print(response.body);
+    print('[weather_downloader.dart] $response.body');
     List<dynamic> responseList = jsonDecode(response.body);
     return responseList;
   }

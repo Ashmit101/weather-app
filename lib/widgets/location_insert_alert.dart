@@ -42,7 +42,7 @@ class _InsertLocationState extends State<InsertLocation> {
 
 getLocationFromUser(BuildContext context) async {
   String location = locationController.text;
-  print('Location : $location');
+  print('[location_insert_alert.dart] Location : $location');
   //Download list of GeoLocations from the openweathermap
   var locationList = await DownloadWeather.downloadLocationCoords(location);
   //Make the user choose the location
@@ -60,7 +60,7 @@ getLocationFromUser(BuildContext context) async {
 
 void saveLocation(chosenLocation) async {
   int id = await sembastDb.addSideLocation(chosenLocation);
-  print('Saved side location at : $id');
+  print('[location_insert_alert.dart] Saved side location at : $id');
 }
 
 //Add the location to the shared preferences
@@ -73,5 +73,5 @@ void addToSharedPrefs(String location) async {
   locations.add(location);
   //Store the location to the shared prefs
   await sp.setStringList(Constants.multipleLocationKey, locations);
-  print('$location added to the shared prefs');
+  print('[location_insert_alert.dart] $location added to the shared prefs');
 }

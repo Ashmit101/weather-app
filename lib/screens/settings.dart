@@ -20,7 +20,7 @@ class _SettingsState extends State<Settings> {
 
   @override
   Widget build(BuildContext context) {
-    print('BUild');
+    print('[settings.dart] Build');
     return WillPopScope(
       onWillPop: () async {
         Navigator.pop(context, changed);
@@ -119,7 +119,7 @@ class _SettingsState extends State<Settings> {
       }
       await prefs.setInt('unit', unitId);
       changed = true;
-      print('Unit saved : $unitId');
+      print('[settings.dart] Unit saved : $unitId');
       setState(() {});
     }
   }

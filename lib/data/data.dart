@@ -30,7 +30,7 @@ class Constants {
     if (api?.length == 0 || api == null) {
       api = apiKey;
     }
-    print('(Constants) API called : $api');
+    print('[data.dart] API called : $api');
     var uri = Uri.parse(
         'http://api.openweathermap.org/geo/1.0/reverse?lat=$lat&lon=$lon&appid=$api');
     return uri;
@@ -41,7 +41,7 @@ class Constants {
     if (api?.length == 0 || api == null) {
       api = apiKey;
     }
-    print('(Constants) API called : $api');
+    print('[data.dart] API called : $api');
     var uri = Uri.parse(
         'http://api.openweathermap.org/geo/1.0/direct?q=$cityName&limit=3&appid=$api');
     return uri;
