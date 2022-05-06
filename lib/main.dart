@@ -29,11 +29,11 @@ class MyApp extends StatelessWidget {
   checkInternet() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile) {
-      print('Connected : mobile');
+      print('[main.dart] Connected : mobile');
     } else if (connectivityResult == ConnectivityResult.wifi) {
-      print('Connected : wifi');
+      print('[main.dart] Connected : wifi');
     } else {
-      print('Not connected : Offline');
+      print('[main.dart] Not connected : Offline');
     }
   }
 }

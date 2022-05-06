@@ -51,9 +51,9 @@ class _LocationsState extends State<Locations> {
   void _getSavedLocations() async {
     var list = await sembastDb.getSideLocations();
     if (list == null) {
-      print('The side locations is null');
+      print('[side_locations.dart] The side locations is null');
     } else {
-      print('Side location type: ${list.runtimeType}');
+      print('[side_locations.dart] Side location type: ${list.runtimeType}');
     }
   }
 }

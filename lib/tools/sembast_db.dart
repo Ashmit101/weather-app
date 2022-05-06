@@ -42,9 +42,9 @@ class SembastDb {
   Future<int> addLocation(GeoLocation location) async {
     await init();
     await locationStore.delete(_db!);
-    print('Deleted previous location');
+    print('[sembdast.db] Deleted previous location');
     int id = await locationStore.add(_db!, location.toMap());
-    print('Added new location');
+    print('[sembdast.db] Added new location');
     return id;
   }
 
@@ -90,10 +90,10 @@ class SembastDb {
     await init();
     final snapshot = await apiStore.find(_db!);
     var apiList = snapshot.map((item) {
-      print(item);
+      print('[sembdast.db] $item');
       return item.value['api'];
     }).toList();
-    print('Number of apis stored : ${apiList.length}');
+    print('[sembdast.db] Number of apis stored : ${apiList.length}');
     if (apiList.length == 0) {
       //No API stored yet
 
