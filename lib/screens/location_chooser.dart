@@ -1,14 +1,8 @@
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/material.dart';
 import 'package:weather/data/geolocation.dart';
-import 'package:weather/screens/today_details.dart';
-import 'package:weather/tools/weather_downloader.dart';
-import 'package:weather/widgets/choose_coord.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'api_instructions.dart';
+import 'package:weather/widgets/location_form.dart';
 import '../tools/sembast_db.dart';
-import '../widgets/api_field.dart';
 
 TextEditingController locationTextController = TextEditingController();
 TextEditingController apiTextController = TextEditingController();
@@ -99,106 +93,11 @@ class _LocationChooserState extends State<LocationChooser> {
                       if (snapshot.hasData) {
                         var savedLocation = snapshot.data as List<GeoLocation>;
                         print(
-                            'Number of saved locations: ${savedLocation.length}');
+                            '[location_chooser.dart] Number of saved locations: ${savedLocation.length}');
                         if (savedLocation.isEmpty) {
-                          return Scaffold(
-                              appBar: AppBar(
-                                title: Text('Location'),
-                              ),
-                              body: SingleChildScrollView(
-                                child: Container(
-                                  padding: EdgeInsets.all(15.0),
-                                  child: Column(
-                                    children: [
-                                      Icon(
-                                        Icons.explore,
-                                        size: 50,
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text("Search your location"),
-                                      ),
-                                      TextField(
-                                        decoration: locationInputDecoration,
-                                        controller: locationTextController,
-                                      ),
-                                      Container(
-                                        height: 8,
-                                      ),
-                                      //API textfield
-                                      TextField(
-                                        maxLength: 32,
-                                        decoration: apiInputDecoration,
-                                        controller: apiTextController,
-                                      ),
-                                      APIField(),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          ElevatedButton(
-                                            style: buttonStyle,
-                                            onPressed: () {
-                                              String apiKey =
-                                                  apiTextController.text;
-                                              String cityName =
-                                                  locationTextController.text;
-                                              if (cityName != '') {
-                                                setState(() {
-                                                  _isProgressVisible = true;
-                                                });
-                                                submit(
-                                                    context, apiKey, cityName);
-                                              }
-                                            },
-                                            child: Text('Submit'),
-                                          ),
-                                          Visibility(
-                                            visible: _isProgressVisible,
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: SizedBox(
-                                                  height: 15,
-                                                  width: 15,
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                    strokeWidth: 3,
-                                                  )),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      ElevatedButton(
-                                        style: buttonStyle,
-                                        onPressed: () {
-                                          setState(() {
-                                            _isDeviceLocationProgressVisible =
-                                                true;
-                                          });
-                                          return getDeviceLocation(context);
-                                        },
-                                        child: Text('Use device location'),
-                                      ),
-                                      Visibility(
-                                        visible:
-                                            _isDeviceLocationProgressVisible,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: SizedBox(
-                                              height: 15,
-                                              width: 15,
-                                              child: CircularProgressIndicator(
-                                                strokeWidth: 3,
-                                              )),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ));
+                          return LocationForm();
                         }
-                        gotoCurrentWeather(context, savedLocation[0]);
+                        //gotoCurrentWeather(context, savedLocation[0]);
                       }
                     }
                     //While waiting
@@ -241,100 +140,5 @@ class _LocationChooserState extends State<LocationChooser> {
   Future<List<GeoLocation>> getSavedLocation() async {
     List<GeoLocation> savedLocation = await sembastDb.getLocation();
     return savedLocation;
-  }
-
-  void getLocationCoordinate(BuildContext context, String cityName) async {
-    var geoLocationList =
-        await DownloadWeather.downloadLocationCoords(cityName);
-    if (geoLocationList.runtimeType == int) {
-      print('returned int $geoLocationList');
-      setState(() {
-        apiInputDecoration = apiDecorationError;
-      });
-    } else {
-      showDialogWithLocations(context, geoLocationList);
-    }
-    setState(() {
-      _isProgressVisible = false;
-    });
-  }
-
-  void showDialogWithLocations(
-      BuildContext context, List<GeoLocation> geoLocations) async {
-    //Location chosen by the user
-    var chosenLocation = await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return ChooseCoord.fromGeoList(geoLocations);
-        });
-    if (chosenLocation != null) {
-      sembastDb.addLocation(chosenLocation);
-      gotoCurrentWeather(context, chosenLocation);
-    }
-  }
-
-  getDeviceLocation(BuildContext context) async {
-    print('Pressed auto locate');
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    //Test if location permission enabled
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      //Location services are not enabled
-      print('Location services are disabled');
-      return;
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        print('Location permissions are denied');
-        return;
-      }
-    } else {
-      print('Permission granted');
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      print('Location permission denied. Unable to ask again.');
-      return;
-    } else {
-      print('Permission granted - forever');
-    }
-
-    Position currentPosition = await Geolocator.getCurrentPosition();
-    print(currentPosition);
-    List<dynamic> locations =
-        await DownloadWeather.downloadLocationNameFromCoord(
-            currentPosition.latitude, currentPosition.longitude);
-    var location = locations[0] as Map<String, dynamic>;
-
-    List<GeoLocation> geoLocationList =
-        await DownloadWeather.downloadLocationCoords(location['name']);
-    showDialogWithLocations(context, geoLocationList);
-    setState(() {
-      _isDeviceLocationProgressVisible = false;
-    });
-  }
-
-  gotoCurrentWeather(BuildContext context, GeoLocation location) {
-    SchedulerBinding.instance?.addPostFrameCallback((timeStamp) {
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => CurrentDetails(location)));
-    });
-  }
-
-  void submit(BuildContext context, String? apiKey, String cityName) async {
-    await sembastDb.addApiKey(apiKey);
-    getLocationCoordinate(context, cityName);
-  }
-
-  void gotoApiInstruction() {
-    SchedulerBinding.instance?.addPostFrameCallback((timeStamp) {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => ApiKeyInstruction()));
-    });
   }
 }

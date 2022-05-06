@@ -17,7 +17,8 @@ class ApiKeyInstruction extends StatelessWidget {
               return Markdown(
                 data: snapshot.data!,
                 onTapLink: (String text, String? href, String title) {
-                  print('Text: $text, href: $href, title: $title');
+                  print(
+                      '[api_instructions.dart] Text: $text, href: $href, title: $title');
                   _launchURL(href);
                 },
               );
@@ -36,7 +37,7 @@ void _launchURL(String? href) async {
     if (await canLaunchUrl(link)) {
       await launchUrl(link);
     } else {
-      print('Could not launch link');
+      print('[api_instructions.dart] Could not launch link');
     }
   }
 }

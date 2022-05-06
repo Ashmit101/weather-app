@@ -42,7 +42,7 @@ class _CurrentDetailsState extends State<CurrentDetails> {
 
   @override
   Widget build(BuildContext context) {
-    print('Built TodayDetails');
+    print('[today_details.dart] Built TodayDetails');
     TextStyle titleStyle = TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: 16,
@@ -212,7 +212,7 @@ class _CurrentDetailsState extends State<CurrentDetails> {
     var changedLocation = await showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AddLocation(true, title: 'Change Location');
+          return AddLocation();
         });
 
     if (changedLocation != null) {

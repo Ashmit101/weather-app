@@ -28,26 +28,42 @@ class ChangeAPI extends StatefulWidget {
 }
 
 class _ChangeAPIState extends State<ChangeAPI> {
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text("Change API"),
       content: SingleChildScrollView(
-        child: Column(
-          children: [
-            TextField(
-              maxLength: 32,
-              controller: textController,
-              decoration: decoration,
-            ),
-            APIField(),
-            ElevatedButton(
-              onPressed: () {
-                submitAPI(context, textController);
-              },
-              child: const Text('Submit'),
-            ),
-          ],
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              TextFormField(
+                controller: textController,
+                decoration: decoration,
+                validator: (value) {
+                  if (value != null) {
+                    if (value.length != 32 && value.length != 0) {
+                      return "The API key should be 32 characters long.";
+                    }
+                  }
+                  return null;
+                },
+              ),
+              APIInstruction(),
+              ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    // Validated
+                    // Now check whether the key is correct and active
+                    submitAPI(context, textController);
+                  }
+                },
+                child: const Text("Submit"),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -55,27 +71,17 @@ class _ChangeAPIState extends State<ChangeAPI> {
 
   void submitAPI(
       BuildContext context, TextEditingController textController) async {
-    print("Change API: Inside submitAPI");
-    String api = textController.text;
-    int apiLength = api.length;
-    if (apiLength != 32) {
-      print('Error: API key must be of 32 characters');
+    String apiKey = textController.text;
+    bool apiIsCorrect = await DownloadWeather.checkAPI(apiKey);
+    if (apiIsCorrect) {
+      int id = await sembastDb.addApiKey(apiKey);
+      if (id >= 0) {
+        Navigator.pop(context, apiKey);
+      }
+    } else {
       setState(() {
         decoration = errorInputDecoration;
       });
-    } else {
-      print('API key is 32 characters');
-      bool apiIsCorrect = await DownloadWeather.checkAPI(api);
-      if (apiIsCorrect) {
-        int id = await sembastDb.addApiKey(api);
-        if (id >= 0) {
-          Navigator.pop(context, api);
-        }
-      } else {
-        setState(() {
-          decoration = errorInputDecoration;
-        });
-      }
     }
   }
 }
