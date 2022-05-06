@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:weather/data/geolocation.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:weather/screens/today_details.dart';
 import 'package:weather/widgets/location_form.dart';
 import '../tools/sembast_db.dart';
 
@@ -97,7 +99,7 @@ class _LocationChooserState extends State<LocationChooser> {
                         if (savedLocation.isEmpty) {
                           return LocationForm();
                         }
-                        //gotoCurrentWeather(context, savedLocation[0]);
+                        gotoCurrentWeather(context, savedLocation[0]);
                       }
                     }
                     //While waiting
@@ -140,5 +142,12 @@ class _LocationChooserState extends State<LocationChooser> {
   Future<List<GeoLocation>> getSavedLocation() async {
     List<GeoLocation> savedLocation = await sembastDb.getLocation();
     return savedLocation;
+  }
+
+  gotoCurrentWeather(BuildContext context, GeoLocation location) {
+    SchedulerBinding.instance?.addPostFrameCallback((timeStamp) {
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => CurrentDetails(location)));
+    });
   }
 }
