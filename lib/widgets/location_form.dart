@@ -43,64 +43,67 @@ class LocationFormState extends State<LocationForm> {
       appBar: AppBar(
         title: const Text('Location'),
       ),
-      body: SingleChildScrollView(
-        child: Form(
-          key: _locationFormKey,
-          child: Column(
-            children: [
-              Icon(
-                Icons.explore,
-                size: 50,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text("Search your location"),
-              ),
-              //Location name text field
-              TextFormField(
-                controller: locationTextController,
-                decoration: locationInputDecoration,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter some text';
-                  }
-                  return null;
-                },
-              ),
-              Container(
-                height: 8,
-              ),
-              APIInstruction(),
-              //API text field
-              TextFormField(
-                controller: apiTextController,
-                decoration: apiInputDecoration,
-                validator: (value) {
-                  if (value != null) {
-                    if (value.length != 32 && value.length != 0) {
-                      return 'API key should be 32 characters long';
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SingleChildScrollView(
+          child: Form(
+            key: _locationFormKey,
+            child: Column(
+              children: [
+                Icon(
+                  Icons.explore,
+                  size: 50,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("Search your location"),
+                ),
+                //Location name text field
+                TextFormField(
+                  controller: locationTextController,
+                  decoration: locationInputDecoration,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter some text';
                     }
-                  }
-                  return null;
-                },
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_locationFormKey.currentState!.validate()) {
-                        String cityName = locationTextController.text;
-                        String apiKey = apiTextController.text;
-
-                        submit(context, cityName, apiKey);
+                    return null;
+                  },
+                ),
+                Container(
+                  height: 8,
+                ),
+                APIInstruction(),
+                //API text field
+                TextFormField(
+                  controller: apiTextController,
+                  decoration: apiInputDecoration,
+                  validator: (value) {
+                    if (value != null) {
+                      if (value.length != 32 && value.length != 0) {
+                        return 'API key should be 32 characters long';
                       }
-                    },
-                    child: const Text('Submit'),
-                  )
-                ],
-              )
-            ],
+                    }
+                    return null;
+                  },
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        if (_locationFormKey.currentState!.validate()) {
+                          String cityName = locationTextController.text;
+                          String apiKey = apiTextController.text;
+
+                          submit(context, cityName, apiKey);
+                        }
+                      },
+                      child: const Text('Submit'),
+                    )
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),

@@ -96,88 +96,93 @@ class _CurrentDetailsState extends State<CurrentDetails> {
                   ),
                 ],
               ),
-              body: ListView(children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 16.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.network(
-                                Constants.getIcon(
-                                        weather.currentWeather.weatherIcon!)
-                                    .toString(),
-                                scale: 1.5,
-                              ),
-                              Text(
-                                weather.currentWeather.weatherMain!,
-                                style: TextStyle(
-                                  fontSize: 20,
+              body: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ListView(children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(right: 16.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.network(
+                                  Constants.getIcon(
+                                          weather.currentWeather.weatherIcon!)
+                                      .toString(),
+                                  scale: 1.5,
                                 ),
-                              ),
-                            ],
+                                Text(
+                                  weather.currentWeather.weatherMain!,
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        Text(
-                          '${weather.currentWeather.temp.round()}${units.getTempUnit(weather.unitId)}',
-                          style: TextStyle(fontSize: 90),
-                        ),
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(right: 8.0),
-                                child: Row(
+                          Text(
+                            '${weather.currentWeather.temp.round()}${units.getTempUnit(weather.unitId)}',
+                            style: TextStyle(fontSize: 90),
+                          ),
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.air),
+                                      Text(
+                                          '${weather.currentWeather.windSpeed}${units.getWindSpeedUnit(weather.unitId)}'),
+                                    ],
+                                  ),
+                                ),
+                                Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Icon(Icons.air),
+                                    Image(
+                                      image:
+                                          AssetImage('graphics/humidity.png'),
+                                    ),
                                     Text(
-                                        '${weather.currentWeather.windSpeed}${units.getWindSpeedUnit(weather.unitId)}'),
+                                        '${weather.currentWeather.humidity}${units.getHumidityUnit()}'),
                                   ],
-                                ),
-                              ),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Image(
-                                    image: AssetImage('graphics/humidity.png'),
-                                  ),
-                                  Text(
-                                      '${weather.currentWeather.humidity}${units.getHumidityUnit()}'),
-                                ],
-                              )
-                            ]),
-                      ]),
-                ),
-                Text(
-                  'Today',
-                  style: titleStyle,
-                ),
-                Container(
-                  height: 150,
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: weather.hourlyWeather.length,
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (BuildContext context, int index) {
-                      return HourlyWeatherTile(weather.hourlyWeather[index],
-                          weather.timeshift, weather.unitId);
-                    },
+                                )
+                              ]),
+                        ]),
                   ),
-                ),
-                Text(
-                  'Coming week',
-                  style: titleStyle,
-                ),
-                Column(
-                  children: getDailies(
-                      weather.dailyWeather, weather.timeshift, weather.unitId),
-                ),
-              ]),
+                  Text(
+                    'Today',
+                    style: titleStyle,
+                  ),
+                  Container(
+                    height: 150,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: weather.hourlyWeather.length,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (BuildContext context, int index) {
+                        return HourlyWeatherTile(weather.hourlyWeather[index],
+                            weather.timeshift, weather.unitId);
+                      },
+                    ),
+                  ),
+                  Text(
+                    'Coming week',
+                    style: titleStyle,
+                  ),
+                  Column(
+                    children: getDailies(weather.dailyWeather,
+                        weather.timeshift, weather.unitId),
+                  ),
+                ]),
+              ),
             );
           }
         }
