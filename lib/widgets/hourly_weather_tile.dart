@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:weather/data/data.dart';
 import 'package:weather/data/hourly_weather.dart';
@@ -25,9 +26,11 @@ class HourlyWeatherTile extends StatelessWidget {
             children: [
               Text(Format.getHourMinute(Constants.getDateTimeFromUTC(
                   hourlyWeather.time as int, offset))),
-              Image.network(
-                Constants.getIcon(hourlyWeather.weatherIcon!).toString(),
-                scale: 2,
+              Image(
+                height: 50,
+                width: 50,
+                image: CachedNetworkImageProvider(
+                    Constants.getIcon(hourlyWeather.weatherIcon!).toString()),
               ),
               Text('${hourlyWeather.temp}${units.getTempUnit(unitId)}')
             ],

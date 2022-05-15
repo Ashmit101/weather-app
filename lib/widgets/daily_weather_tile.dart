@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:weather/data/daily_weather.dart';
 import '../data/data.dart';
@@ -29,8 +30,9 @@ class DailyWeatherTile extends StatelessWidget {
           ),
           Expanded(
             flex: 2,
-            child: Image.network(
-                Constants.getIcon(dailyWeather.weatherIcon!).toString()),
+            child: Image(
+                image: CachedNetworkImageProvider(
+                    Constants.getIcon(dailyWeather.weatherIcon!).toString())),
           ),
           Expanded(
             flex: 3,
