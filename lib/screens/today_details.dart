@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:weather/data/daily_weather.dart';
 import 'package:weather/data/weather_forecast.dart';
@@ -109,12 +110,13 @@ class _CurrentDetailsState extends State<CurrentDetails> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Image.network(
-                                  Constants.getIcon(
-                                          weather.currentWeather.weatherIcon!)
-                                      .toString(),
-                                  scale: 1.5,
-                                ),
+                                Image(
+                                    height: 66,
+                                    width: 66,
+                                    image: CachedNetworkImageProvider(
+                                        Constants.getIcon(weather
+                                                .currentWeather.weatherIcon!)
+                                            .toString())),
                                 Text(
                                   weather.currentWeather.weatherMain!,
                                   style: TextStyle(
