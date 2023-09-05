@@ -33,6 +33,7 @@ class AddLocation extends StatelessWidget {
                       return "Enter the name of your location";
                     }
                   }
+                  return null;
                 },
               ),
               ElevatedButton(

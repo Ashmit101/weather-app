@@ -145,7 +145,7 @@ class _LocationChooserState extends State<LocationChooser> {
   }
 
   gotoCurrentWeather(BuildContext context, GeoLocation location) {
-    SchedulerBinding.instance?.addPostFrameCallback((timeStamp) {
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (context) => CurrentDetails(location)));
     });

@@ -27,7 +27,7 @@ class APIInstruction extends StatelessWidget {
   }
 
   void gotoApiInstruction(BuildContext context) {
-    SchedulerBinding.instance?.addPostFrameCallback((timeStamp) {
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       Navigator.push(context,
           MaterialPageRoute(builder: (context) => ApiKeyInstruction()));
     });
